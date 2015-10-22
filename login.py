@@ -2,10 +2,11 @@ import sys
 import cx_Oracle
 import getpass
 import os
+import clearScreen
 
-def clearScreen():
-	os.system('cls' if os.name == 'nt' else 'clear')
-	return()
+#def clearScreen():
+#	os.system('cls' if os.name == 'nt' else 'clear')
+#	return()
 
 def userLogin(curs):
 	"Attempts to log user into system"
