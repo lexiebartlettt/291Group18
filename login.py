@@ -1,23 +1,65 @@
 import sys
 import cx_Oracle
 import getpass
+import os
+
+def clearScreen():
+	os.system('cls' if os.name == 'nt' else 'clear')
+	return()
 
 def userLogin(curs):
 	"Attempts to log user into system"
-	#queryFile = open("loginSearch.sql", 'r')
-	#queryStr = queryFile.read().replace('\n', ' ')
+	queryFile = open("loginSearch.sql", 'r')
+	queryStr = queryFile.read().replace('\n', ' ')
 	#print(queryStr)
-	#queryFile.close
+	queryFile.close
 	try:
 		#curs.execute(queryStr, {'username':'UlaStyers@e.ca'})
-		curs.execute("Select email from users where email = 'UlaStyers@e.ca'")
-		rows = curs.fetchall()
-		print(rows)
+		#curs.execute("Select email from users where email = 'UlaStyers@e.ca'")
+		#rows = curs.fetchall()
+		#print(rows)
 		
-		curs.prepare("Select email from users where email = :username")
-		curs.execute(None, {'username': 'UlaStyers@e.ca'})
+		clearScreen()
+		
+		uname = input("Please enter username: ")
+		pwd = getpass.getpass()
+		
+		uname = "'" + uname + "'"
+		pwd = "'" + pwd + "'"
+		
+		queryStr = queryStr.replace(":username", uname)
+		queryStr = queryStr.replace(":pwd", pwd)
+		
+		#print (queryStr)
+		
+		curs.execute(queryStr)
+		
 		rows = curs.fetchall()
-		print(rows)
+		result = rows[0][0]
+
+		if result == 1:
+			print("Login Successful")
+			#openMenu()
+			print("Do menu function")
+		elif result == 0:
+			print("Login Unsuccessful")
+			#initialLogin()
+			sys.exit()
+		else:
+			print ("Unforseen Error")
+			print( "Result = " + str(result))
+			for row in rows:
+				print(row)
+			sys.exit()
+		
+		#curs.prepare("Select email from users where email = :username")
+		#query = "Select email from users where email = :username"
+		#query = query.replace(":username", uname)
+		#print(query)
+		#curs.execute(query)
+		#curs.execute(query, {"username": "UlaStyers@e.ca"})
+		#rows = curs.fetchall()
+		#print(rows)
 	
 	except cx_Oracle.DatabaseError as exc:
 		error, = exc.args
@@ -40,7 +82,8 @@ except cx_Oracle.DatabaseError as exc:
 	print( sys.stderr, "Oracle code:", error.code)
 	print( sys.stderr, "oracle message:", error.message)
 	print("Connection Failed. Exiting Program")
-	sys.exit
+	sys.exit()
+	
 try:
 	print("Welcome to group 18's airline management system.")
 	print("Type Login, Register or Exit to continue.")
@@ -51,6 +94,7 @@ try:
 		if userInput.strip().lower() in ('login', 'log', 'l'):
 			print("Logging in.")
 			userLogin(curs)
+			
 			break
 		elif userInput.strip().lower() in ('register', 'reg', 'r'):
 			print("Registering")
