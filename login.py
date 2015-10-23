@@ -51,7 +51,7 @@ def userLogin(curs):
 		if result == 1:
 			print("Login Successful")
 			user1 = user.User(uname, isAgent)
-			menu.displayMenu(user1)
+			menu.displayMenu(curs, user1)
 			#print("Do menu function")
 			sys.exit()
 		elif result == 0:
@@ -69,7 +69,7 @@ def userLogin(curs):
 	except cx_Oracle.DatabaseError as exc:
 		error, = exc.args
 		print( sys.stderr, "Oracle code:", error.code)
-		print( sys.stderr, "oracle message:", error.message)
+		print( sys.stderr, "Oracle message:", error.message)
 
 
 def connect():
@@ -85,7 +85,7 @@ def connect():
 	except cx_Oracle.DatabaseError as exc:
 		error, = exc.args
 		print( sys.stderr, "Oracle code:", error.code)
-		print( sys.stderr, "oracle message:", error.message)
+		print( sys.stderr, "Oracle message:", error.message)
 		print("Connection Failed. Exiting Program")
 		sys.exit()
 	return(curs)
@@ -119,7 +119,7 @@ def displayLoginScreen(curs):
 	except cx_Oracle.DatabaseError as exc:
 		error, = exc.args
 		print( sys.stderr, "Oracle code:", error.code)
-		print( sys.stderr, "oracle message:", error.message)
+		print( sys.stderr, "Oracle message:", error.message)
 	
 	return()
 
@@ -147,7 +147,7 @@ def registerUser(curs):
 		
 		isAgent = false
 		user1 = user.User(uname, isAgent)
-		menu.displayMenu(user1)
+		menu.displayMenu(curs, user1)
 		sys.exit()
 
 	except cx_Oracle.DatabaseError as exc:
@@ -157,7 +157,7 @@ def registerUser(curs):
 			registerUser(curs)
 		else:
 			print( sys.stderr, "Oracle code:", error.code)
-			print( sys.stderr, "oracle message:", error.message)
+			print( sys.stderr, "Oracle message:", error.message)
 		
 if __name__ == '__main__':
 	curs = connect()
