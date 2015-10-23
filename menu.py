@@ -17,7 +17,22 @@ def giveOptions(user1):
 		print("Type 'Arr' to record a flight arrival")
 	return()
 
-def displayMenu(user1):
+def logout(curs, user1):
+	try:
+	
+		queryStr = "Update users set last_login = sysdate where email = :username"
+		queryStr = queryStr.replace(":username", user1.getEmail())
+	
+		curs.execute(queryStr)
+		curs.connection.commit()
+	
+	except cx_Oracle.DatabaseError as exc:
+		error, = exc.args
+		print (sys.stderr, "Oracle code:", error.code)
+		print (sys.stderr, "Oracle Message:", error.message)
+	
+
+def displayMenu(curs, user1):
 	
 	clearScreen.clearScreen()	
 	#userInput = input()
@@ -42,7 +57,7 @@ def displayMenu(user1):
 			clearScreen.clearScreen()	
 		elif userInput.strip().lower() == 'logout':
 			print("Logging out.")
-			#logout()
+			logout(curs, user1)
 			#break
 			sys.exit()
 		elif userInput.strip().lower() == 'dep':
@@ -66,6 +81,3 @@ def displayMenu(user1):
 			
 		
 	return()
-
-if __name__ == '__main__':
-	displayMenu(False)
