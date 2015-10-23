@@ -1,6 +1,7 @@
 import sys
 import clearScreen
 import user
+import listBookings
 
 def giveOptions(user1):
 	
@@ -51,8 +52,7 @@ def displayMenu(curs, user1):
 			#break
 			clearScreen.clearScreen()	
 		elif userInput.strip().lower() == 'list':
-			input("List bookings.")
-			#list()
+			listBookings.listSummaryBookings(curs, user1)
 			#break
 			clearScreen.clearScreen()	
 		elif userInput.strip().lower() == 'logout':
