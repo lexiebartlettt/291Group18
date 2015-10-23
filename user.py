@@ -1,8 +1,8 @@
 class User():
     
-    def __init__(self, email, isAgent):
+    def __init__(self, email, isAirAgent):
         self.email = email
-        self.isAgent = isAgent
+        self.isAirAgent = isAirAgent
         
     def getEmail(self):
         return self.email
