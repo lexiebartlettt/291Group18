@@ -8,7 +8,7 @@ def userLogin(curs):
 	"Attempts to log user into system"
 	queryFile = open("loginSearch.sql", 'r')
 	queryStr = queryFile.read().replace('\n', ' ')
-	queryFile.close
+	queryFile.close()
 	try:
 		
 		clearScreen()
@@ -69,7 +69,7 @@ def connect():
 		sys.exit()
 	return(curs)
 
-def displayLoginScreen(curs)	
+def displayLoginScreen(curs):	
 	try:
 		print("Welcome to group 18's airline management system.")
 		print("Type Login, Register or Exit to continue.")
