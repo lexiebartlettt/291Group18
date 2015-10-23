@@ -8,4 +8,4 @@ class User():
         return self.email
     
     def isAgent(self):
-        return self.isAgent
+        return self.isAirAgent
