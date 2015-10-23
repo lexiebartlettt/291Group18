@@ -3,6 +3,8 @@ import cx_Oracle
 import getpass
 import os
 import clearScreen
+import user
+import menu
 
 def userLogin(curs):
 	"Attempts to log user into system"
@@ -11,7 +13,7 @@ def userLogin(curs):
 	queryFile.close()
 	try:
 		
-		clearScreen()
+		clearScreen.clearScreen()
 		
 		uname = input("Please enter username: ")
 		pwd = getpass.getpass()
@@ -28,13 +30,33 @@ def userLogin(curs):
 		rows = curs.fetchall()
 		result = rows[0][0]
 
+		#check if user is agent
+		curs.execute("Select count(*) from airline_agents where email = " + uname)
+		isAgentRows = curs.fetchall()
+		isAgentResult = isAgentRows[0][0]
+		 
+		if isAgentResult == 1:
+			isAgent = True
+		elif isAgentResult == 0:
+			isAgent = False
+		else:
+			print ("Unforseen Error (agent)")
+			print( "Result = " + str(isAgentResult))
+			for row in isAgentRows:
+				print(row)
+			sys.exit()
+
+		#print("Agent status: " + str(isAgent))
+	
 		if result == 1:
 			print("Login Successful")
-			#openMenu()
-			print("Do menu function")
+			user1 = user.User(uname, isAgent)
+			menu.displayMenu(user1)
+			#print("Do menu function")
+			sys.exit()
 		elif result == 0:
 			print("Login Unsuccessful")
-			#initialLogin()
+			displayLoginScreen(curs)
 			sys.exit()
 		else:
 			print ("Unforseen Error")
@@ -49,7 +71,6 @@ def userLogin(curs):
 		print( sys.stderr, "Oracle code:", error.code)
 		print( sys.stderr, "oracle message:", error.message)
 
-	return
 
 def connect():
 	user=getpass.getuser()
@@ -78,13 +99,12 @@ def displayLoginScreen(curs):
 
 		while True:
 			if userInput.strip().lower() in ('login', 'log', 'l'):
-				print("Logging in.")
+				#print("Logging in.")
 				userLogin(curs)
-			
 				break
 			elif userInput.strip().lower() in ('register', 'reg', 'r'):
-				print("Registering")
-				#registerUser()
+				#print("Registering")
+				registerUser(curs)
 				break
 			elif userInput.strip().lower() in ('exit', 'e'):
 				print("Goodbye.")
@@ -103,6 +123,42 @@ def displayLoginScreen(curs):
 	
 	return()
 
+def registerUser(curs):
+
+	try:
+		
+		queryStr = "Insert into users values (:username, :pwd, NULL)" 
+		uname = input("Please enter username: ")
+		print("Please enter a password below, max 4 characters.")
+		pwd = getpass.getpass()
+
+		while len(pwd) > 4 or len(pwd) < 1:
+			print("Invalid password lenght")
+			pwd = getpass.getpass()
+		
+		uname = "'" + uname + "'"
+		pwd = "'" + pwd + "'"
+		
+		queryStr = queryStr.replace(":username", uname)
+		queryStr = queryStr.replace(":pwd", pwd)
+
+		curs.execute(queryStr)
+		curs.connection.commit()
+		
+		isAgent = false
+		user1 = user.User(uname, isAgent)
+		menu.displayMenu(user1)
+		sys.exit()
+
+	except cx_Oracle.DatabaseError as exc:
+		error, = exc.args
+		if error.code == 1:
+			print("Username already taken. Please try again")
+			registerUser(curs)
+		else:
+			print( sys.stderr, "Oracle code:", error.code)
+			print( sys.stderr, "oracle message:", error.message)
+		
 if __name__ == '__main__':
 	curs = connect()
 	displayLoginScreen(curs)
