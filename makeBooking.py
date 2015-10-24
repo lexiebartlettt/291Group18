@@ -20,7 +20,7 @@ import getpass # the package for getting password from user without displaying i
 
 
 
-def createBooking( flightnum1, flightnum2 = -1):
+def createBooking( flightnum1, flightnum2 = -1, thisUser):
 	
 	# SQL statement to execute
 	createStr = ("create table TOFFEES "
@@ -40,7 +40,15 @@ def createBooking( flightnum1, flightnum2 = -1):
 		if not passengerName:
     		passengerName=getpass.getuser()
 
-    	checkPassStr = ("SELECT COUNT(*) FROM passengers p WHERE p.name=:1", passengerName)
+    		checkPassStr = ("SELECT COUNT(*) FROM passengers p WHERE p.name=passengerName", passengerName=passengerName)
+    		
+    		curs.execute(checkPassStr)
+    		newUser = curs.fetch()
+    		if newUser=0:
+    			#get country!~~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~! thisUser.getEmail(thisUser)
+    			curs.execute("INSERT INTO #FINISH!~~!~!~!!~!!~!~!~!~!~!~!~~!!~~!~!
+    		
+    				
 
     	
 
