@@ -36,11 +36,26 @@ def recordDep(curs):
 			elif isInt(rowNum):
 				rowNum = int(rowNum)
 				if rowNum >= 0 and rowNum < len(flightDates):
-					print("Record time for: " + flightDates[rowNum][1])
-					#ticket = bookings[rowNum][0]
-					#flightno = bookings[rowNum][4]
-					#dep_date = bookings[rowNum][2]
-					#listDetailBooking(curs, ticket, flightno, dep_date)
+					while True:
+						depTime = input("Input departure time in following format '00:00'\n")
+						if len(depTime) != 5:
+							print("Input not recogonised.")
+							depTime = input("Input departure time in following format '00:00'\n")
+						elif isInt(depTime[0:2]) and isInt(depTime[3:]) and depTime[2] == ":":
+							if int(depTime[0:2]) >= 0 and int(depTime[0:2]) <= 23:
+								if int(depTime[3:]) >= 0 and int(depTime[3:]) <= 59:
+									print("You win")
+									break
+								else:
+									print("Invalid Time")
+							else:
+								print("Invalid Time")	
+								depTime = input("Input departure time in following format '00:00'\n")
+							
+						else:
+							print("Input not recogonised.")
+							depTime = input("Input departure time in following format '00:00'\n")
+						
 					break
 				else:
 					print("Row Number out of range.")
@@ -48,7 +63,7 @@ def recordDep(curs):
 			else:
 				print("Command not recognized.")
 				rowNum = input("Enter row number to record departure time. Blank entry will return to main menu.\n")
-		input()
+		#input()
 
 	except cx_Oracle.DatabaseError as exc:
 		error, = exc.args
