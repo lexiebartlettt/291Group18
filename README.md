@@ -3,11 +3,11 @@
 1. Login screen Sign in and registration - Bradley - Done
 2. Searching for flights - Lexie
 3. Making a Booking - Fred
-4. List existing bookings by users - Bradley
+4. List existing bookings by users - Bradley - Done
 5. Cancel bookings
 6. Logout -Bradley - Done
-7. Airline agents: Record a flight depature 
-8. Record a flight arrival 
+7. Airline agents: Record a flight depature - Brad
+8. Record a flight arrival - Brad
 9. Added #1
 10. Added #2
 
