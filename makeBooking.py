@@ -20,7 +20,7 @@ import getpass # the package for getting password from user without displaying i
 
 
 
-def createBooking( flightnum1, flightnum2 = -1, thisUser):
+def createBooking( thisUser, flightnum1, fare1, flightnum2 = -1, fare2 = -1):
 	
 	# SQL statement to execute
 	createStr = ("create table TOFFEES "
@@ -40,14 +40,35 @@ def createBooking( flightnum1, flightnum2 = -1, thisUser):
 		if not passengerName:
     		passengerName=getpass.getuser()
 
-    		checkPassStr = ("SELECT COUNT(*) FROM passengers p WHERE p.name=passengerName", passengerName=passengerName)
+    		passengerEmail = thisUser.getEmail(thisUser)
+    		checkPassStr = ("SELECT COUNT(*) FROM passengers p WHERE( p.name=passengerName and p.email=passengerEmail)", passengerName=passengerName)
     		
     		curs.execute(checkPassStr)
     		newUser = curs.fetch()
-    		if newUser=0:
-    			#get country!~~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~! thisUser.getEmail(thisUser)
-    			curs.execute("INSERT INTO #FINISH!~~!~!~!!~!!~!~!~!~!~!~!~~!!~~!~!
     		
+    		if newUser=0:
+    			passengerCountry = input("Your country [%s]: " % getpass.getuser())
+			if not passengerCountry:
+    			passengerCountry=getpass.getuser()
+    		
+    			curs.execute("INSERT INTO passengers VALUES (pE, pN, pC)",
+    				pE=passengerEmail, pN=passengerName, pC=passengerCountry)
+    		
+    		#must create unique ticket number. Will this work with multiple users?
+    		sure.exucute("SELECT MAX(tno) from tickets");
+    		ticketNum = curs.fetch() + 1;
+    		
+    		#double check seats are still free!~~!!~!~~!!~!~~!!~~!~!~!~!~!~!~!~!~!~!~!
+    		#might want a try catch here(for detailed message) incase booking fails !~!~!~~!~!~!~!~!~!~!~!~!!
+    		curs.execute("INSERT INTO bookings
+    		curs.execute("INSERT INTO tickets
+    		
+    		if flightnum2 != -1:
+    			curs.execute("INSERT INTO bookings
+    			curs.execute("INSERT INTO tickets	
+    		
+    		#assuming SQL exception if above failed
+    		print("Your booking was successful!\nHere is your ticket number: " + ticketNum);
     				
 
     	
