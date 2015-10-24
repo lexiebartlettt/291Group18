@@ -2,6 +2,7 @@ import sys
 import clearScreen
 import user
 import listBookings
+import agentFunctions
 
 def giveOptions(user1):
 	
@@ -63,7 +64,7 @@ def displayMenu(curs, user1):
 		elif userInput.strip().lower() == 'dep':
 			if user1.isAgent():
 				print("Record Dep")
-				#recordDep()
+				agentFunctions.recordDep(curs)
 			else:
 				clearScreen.clearScreen()
 				print("Action Unauthorized")
