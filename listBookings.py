@@ -48,7 +48,9 @@ def listSummaryBookings(curs, user1):
 					rowNum = int(rowNum)
 					if rowNum >= 0 and rowNum < len(bookings):
 						ticket = bookings[rowNum][0]
-						listDetailBooking(curs, ticket)
+						flightno = bookings[rowNum][4]
+						dep_date = bookings[rowNum][2]
+						listDetailBooking(curs, ticket, flightno, dep_date)
 						break
 					else:
 						print("Row Number out of range.")
@@ -66,10 +68,39 @@ def listSummaryBookings(curs, user1):
 		error, = exc.args
 		print (sys.stderr, "Oracle code:", error.code)
 		print(sys.stderr, "Oracle message:", error.message)
+		input()
 
 	
 	return()
 
-def listDetailBooking(curs, ticket):
-	input("Details of tno " + str(ticket))
+def listDetailBooking(curs, ticket, flightno, dep_date):
+	#input("Details of tno " + str(ticket) + " flight no " + str(flightno) + " dep_date " + str(dep_date))
+
+	clearScreen.clearScreen()
+	try:
+		queryFile = open('detailedBooking.sql', 'r')
+		queryStr = queryFile.read().replace('\n', ' ')
+		queryFile.close()
+	
+		queryStr = queryStr.replace(':ticket', str(ticket))
+		queryStr = queryStr.replace(':flight', "'"+str(flightno)+"'")
+		queryStr = queryStr.replace(':depdate', "'"+str(dep_date)+"'")
+
+		#input(queryStr)
+		curs.execute(queryStr)
+
+		bookings = curs.fetchall()
+		columns = curs.description
+		
+		for i in range(0,len(columns)-1):
+			item = str(columns[i][0]) + ":" + str(bookings[0][i])
+			print(item)
+
+		input("Press 'Enter' to return.")
+	except cx_Oracle.DatabaseError as exc:
+		error, = exc.args
+		print (sys.stderr, "Oracle code:", error.code)
+		print(sys.stderr, "Oracle message:", error.message)
+		input()
+		
 	return()
