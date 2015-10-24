@@ -39,7 +39,7 @@ def listSummaryBookings(curs, user1):
 
 				i += 1	
 	
-			rowNum = input("Enter row number for more information. Blank entry will return to main menu.")
+			rowNum = input("Enter row number for more information. Blank entry will return to main menu.  ")
 			while True:
 				if rowNum == "":
 					return()
@@ -54,11 +54,11 @@ def listSummaryBookings(curs, user1):
 						break
 					else:
 						print("Row Number out of range.")
-						rowNum = input("Enter row number for more information. Blank entry will return to main menu.")
+						rowNum = input("Enter row number for more information. Blank entry will return to main menu.  ")
 
 				else:
 					print("Command not recognized.")
-					rowNum = input("Enter row number for more information. Blank entry will return to main menu.")
+					rowNum = input("Enter row number for more information. Blank entry will return to main menu.  ")
 
 		else:
 			print("No Bookings Found. Press 'Enter' to continue.")
@@ -93,7 +93,7 @@ def listDetailBooking(curs, ticket, flightno, dep_date):
 		columns = curs.description
 		
 		for i in range(0,len(columns)-1):
-			item = str(columns[i][0]) + ":" + str(bookings[0][i])
+			item = str(columns[i][0]) + " : " + str(bookings[0][i])
 			print(item)
 
 		input("Press 'Enter' to return.")
