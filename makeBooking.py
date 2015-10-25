@@ -28,8 +28,6 @@ def createBooking( thisUser, flightnum1, fare1, flightnum2 = -1, fare2 = -1):
 		
 		# create a cursor 
 		curs = connection.cursor()
-		curs.execute("drop table toffees")
-		curs.execute(createStr)
 		
 		#get name
 		passengerName = input("Your name [%s]: " % getpass.getuser())
