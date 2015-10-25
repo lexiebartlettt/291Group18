@@ -38,42 +38,42 @@ def createBooking( thisUser, flightnum1, fare1, flightnum2 = -1, fare2 = -1):
 		#get name
 		passengerName = input("Your name [%s]: " % getpass.getuser())
 		if not passengerName:
-    		passengerName=getpass.getuser()
+			passengerName=getpass.getuser()
 
-    		passengerEmail = thisUser.getEmail(thisUser)
-    		checkPassStr = ("SELECT COUNT(*) FROM passengers p WHERE( p.name=passengerName and p.email=passengerEmail)", passengerName=passengerName)
+		passengerEmail = thisUser.getEmail(thisUser)
+		checkPassStr = ("SELECT COUNT(*) FROM passengers p WHERE( p.name=passengerName and p.email=passengerEmail)", passengerName=passengerName)
     		
-    		curs.execute(checkPassStr)
-    		newUser = curs.fetch()
+		curs.execute(checkPassStr)
+		newUser = curs.fetch()
     		
-    		if newUser=0:
-    			passengerCountry = input("Your country [%s]: " % getpass.getuser())
+		if newUser=0:
+			passengerCountry = input("Your country [%s]: " % getpass.getuser())
 			if not passengerCountry:
-    			passengerCountry=getpass.getuser()
+				passengerCountry=getpass.getuser()
     		
-    			curs.execute("INSERT INTO passengers VALUES (passengerEmail, passongerName, passengerCountry)", passengerEmail=passengerEmail, passengerName=passengerName, passengerCountry=passengerCountry)
+			curs.execute("INSERT INTO passengers VALUES (passengerEmail, passongerName, passengerCountry)", passengerEmail=passengerEmail, passengerName=passengerName, passengerCountry=passengerCountry)
     		
-    		#must create unique ticket number. Will this work with multiple users?
-    		curs.exucute("SELECT MAX(tno) from tickets")
-    		ticketNum = curs.fetch() + 1
-    		curs.execute("SELECT price FROM flight_fares WHERE fare=fare1",fare1=fare1)
-    		price = curs.fetch()
+		#must create unique ticket number. Will this work with multiple users?
+		curs.exucute("SELECT MAX(tno) from tickets")
+		ticketNum = curs.fetch() + 1
+		curs.execute("SELECT price FROM flight_fares WHERE fare=fare1",fare1=fare1)
+		price = curs.fetch()
     		
     		#double check seats are still free!~~!!~!~~!!~!~~!!~~!~!~!~!~!~!~!~!~!~!~!
     		#might want a try catch here(for detailed message) incase booking fails !~!~!~~!~!~!~!~!~!~!~!~!!
     		#seat # is none, will be assigned when passengers check in at airport
-    		curs.execute("INSERT INTO bookings VALUES(ticketNum, flightnum1, fare1, None)", ticketNum=ticketNum, flightnum1=flightnum1, fare1=fare1, None=None)
+		curs.execute("INSERT INTO bookings VALUES(ticketNum, flightnum1, fare1, None)", ticketNum=ticketNum, flightnum1=flightnum1, fare1=fare1, None=None)
     		
     		
-    		if flightnum2 != -1 and fare2 != -1:
-    			curs.execute("SELECT price FROM flight_fares WHERE fare=fare2",fare2=fare2)
-    			price += curs.fetch()
-    			curs.execute("INSERT INTO bookings VALUES(ticketNum, flightnum2, fare2, None)", ticketNum=ticketNum, flightnum2=flightnum2, fare2=fare2, None=None)	
+		if flightnum2 != -1 and fare2 != -1:
+			curs.execute("SELECT price FROM flight_fares WHERE fare=fare2",fare2=fare2)
+			price += curs.fetch()
+			curs.execute("INSERT INTO bookings VALUES(ticketNum, flightnum2, fare2, None)", ticketNum=ticketNum, flightnum2=flightnum2, fare2=fare2, None=None)	
     		
-    		curs.execute("INSERT INTO tickets VALUES(ticketNum, passengerName, passengerEmail, price", ticketNum=ticketNum, passengerName=passengerName, passengerEmail=passengerEmail, price=price)
+		curs.execute("INSERT INTO tickets VALUES(ticketNum, passengerName, passengerEmail, price", ticketNum=ticketNum, passengerName=passengerName, passengerEmail=passengerEmail, price=price)
     		
     		#assuming SQL exception if above failed
-    		print("Your booking was successful!\nHere is your ticket number: " + ticketNum)
+		print("Your booking was successful!\nHere is your ticket number: " + ticketNum)
     				
 
     	
