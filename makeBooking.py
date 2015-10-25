@@ -51,24 +51,29 @@ def createBooking( thisUser, flightnum1, fare1, flightnum2 = -1, fare2 = -1):
 			if not passengerCountry:
     			passengerCountry=getpass.getuser()
     		
-    			curs.execute("INSERT INTO passengers VALUES (pE, pN, pC)",
-    				pE=passengerEmail, pN=passengerName, pC=passengerCountry)
+    			curs.execute("INSERT INTO passengers VALUES (passengerEmail, passongerName, passengerCountry)", passengerEmail=passengerEmail, passengerName=passengerName, passengerCountry=passengerCountry)
     		
     		#must create unique ticket number. Will this work with multiple users?
-    		sure.exucute("SELECT MAX(tno) from tickets");
-    		ticketNum = curs.fetch() + 1;
+    		curs.exucute("SELECT MAX(tno) from tickets")
+    		ticketNum = curs.fetch() + 1
+    		curs.execute("SELECT price FROM flight_fares WHERE fare=fare1",fare1=fare1)
+    		price = curs.fetch()
     		
     		#double check seats are still free!~~!!~!~~!!~!~~!!~~!~!~!~!~!~!~!~!~!~!~!
     		#might want a try catch here(for detailed message) incase booking fails !~!~!~~!~!~!~!~!~!~!~!~!!
-    		curs.execute("INSERT INTO bookings
-    		curs.execute("INSERT INTO tickets
+    		#seat # is none, will be assigned when passengers check in at airport
+    		curs.execute("INSERT INTO bookings VALUES(ticketNum, flightnum1, fare1, None)", ticketNum=ticketNum, flightnum1=flightnum1, fare1=fare1, None=None)
     		
-    		if flightnum2 != -1:
-    			curs.execute("INSERT INTO bookings
-    			curs.execute("INSERT INTO tickets	
+    		
+    		if flightnum2 != -1 and fare2 != -1:
+    			curs.execute("SELECT price FROM flight_fares WHERE fare=fare2",fare2=fare2)
+    			price += curs.fetch()
+    			curs.execute("INSERT INTO bookings VALUES(ticketNum, flightnum2, fare2, None)", ticketNum=ticketNum, flightnum2=flightnum2, fare2=fare2, None=None)	
+    		
+    		curs.execute("INSERT INTO tickets VALUES(ticketNum, passengerName, passengerEmail, price", ticketNum=ticketNum, passengerName=passengerName, passengerEmail=passengerEmail, price=price)
     		
     		#assuming SQL exception if above failed
-    		print("Your booking was successful!\nHere is your ticket number: " + ticketNum);
+    		print("Your booking was successful!\nHere is your ticket number: " + ticketNum)
     				
 
     	
@@ -76,7 +81,7 @@ def createBooking( thisUser, flightnum1, fare1, flightnum2 = -1, fare2 = -1):
 		#OLD BELOW
 		#OLD BELOW
 		#OLD BELOW
-		data = [('Quadbury', 101, 7.99, 0, 0), ('Smarties',102,6.99,1,2)]
+		"""data = [('Quadbury', 101, 7.99, 0, 0), ('Smarties',102,6.99,1,2)]
 
 		curs.bindarraysize = 2
 		curs.setinputsizes(32, int, float, int, int)
@@ -100,7 +105,7 @@ def createBooking( thisUser, flightnum1, fare1, flightnum2 = -1, fare2 = -1):
 		# (name, type, display_size,internal_size,precision,scale,null_ok)
 		for row in rows:
 			print(row[0]," ",row[1])
-
+"""
 		# close the connection
 		curs.close()
 		connection.close()
