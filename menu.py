@@ -63,15 +63,13 @@ def displayMenu(curs, user1):
 			sys.exit()
 		elif userInput.strip().lower() == 'dep':
 			if user1.isAgent():
-				print("Record Dep")
 				agentFunctions.recordDep(curs)
 			else:
 				clearScreen.clearScreen()
 				print("Action Unauthorized")
 		elif userInput.strip().lower() == 'arr':
 			if user1.isAgent():
-				print("Record Arr")
-				#recordArr()
+				agentFunctions.recordArr(curs)
 			else:
 				clearScreen.clearScreen()
 				print("Action Unauthorized")
