@@ -29,7 +29,7 @@ def createBooking( thisUser, flightnum1, fare1, flightnum2 = -1, fare2 = -1):
 	try:
 		# Establish a connection in Python
 		connection = cx_Oracle.connect(conString)
-
+		
 		# create a cursor 
 		curs = connection.cursor()
 		curs.execute("drop table toffees")
@@ -39,26 +39,26 @@ def createBooking( thisUser, flightnum1, fare1, flightnum2 = -1, fare2 = -1):
 		passengerName = input("Your name [%s]: " % getpass.getuser())
 		if not passengerName:
 			passengerName=getpass.getuser()
-
+		
 		passengerEmail = thisUser.getEmail(thisUser)
 		queryStr = "SELECT COUNT(*) FROM passengers p WHERE( p.name=passengerName and p.email=passengerEmail)"
-    		queryStr = queryStr.replace("passengerName", passengerName)
-    		queryStr = queryStr.replace("passengerEmail", passengerEmail)
-    		
+		queryStr = queryStr.replace("passengerName", passengerName)
+		queryStr = queryStr.replace("passengerEmail", passengerEmail)
+		
 		curs.execute(queryStr)
 		newUser = curs.fetch()
-    		
+		
 		if newUser=0:
 			passengerCountry = input("Your country [%s]: " % getpass.getuser())
 			if not passengerCountry:
 				passengerCountry=getpass.getuser()
-    			
-    			queryStr = "INSERT INTO passengers VALUES (passengerEmail, passongerName, passengerCountry)"
-    			queryStr = queryStr.replace("passengerName", passengerName)
-    			queryStr = queryStr.replace("passengerEmail", passengerEmail)
-    			queryStr = queryStr.replace("passengerCountry", passengerCountry)
+			
+			queryStr = "INSERT INTO passengers VALUES (passengerEmail, passongerName, passengerCountry)"
+			queryStr = queryStr.replace("passengerName", passengerName)
+			queryStr = queryStr.replace("passengerEmail", passengerEmail)
+			queryStr = queryStr.replace("passengerCountry", passengerCountry)
 			curs.execute(queryStr)
-    		
+		
 		#must create unique ticket number. Will this work with multiple users?
 		curs.exucute("SELECT MAX(tno) from tickets")
 		ticketNum = curs.fetch() + 1
@@ -66,18 +66,18 @@ def createBooking( thisUser, flightnum1, fare1, flightnum2 = -1, fare2 = -1):
 		queryStr = queryStr.replace("fare1", fare1)
 		curs.execute(queryStr)
 		price = curs.fetch()
-    		
-    		#double check seats are still free!~~!!~!~~!!~!~~!!~~!~!~!~!~!~!~!~!~!~!~!
-    		#might want a try catch here(for detailed message) incase booking fails !~!~!~~!~!~!~!~!~!~!~!~!!
-    		#seat # is none, will be assigned when passengers check in at airport
-    		queryStr = "INSERT INTO bookings VALUES(ticketNum, flightnum1, fare1, None)"
-    		queryStr = queryStr.replace("ticketNum", ticketNum)
-    		queryStr = queryStr.replace("flightNum1", flightNum1)
-    		queryStr = queryStr.replace("fare1", fare1)
-    		queryStr = queryStr.replace("None", None)
+		
+		#double check seats are still free!~~!!~!~~!!~!~~!!~~!~!~!~!~!~!~!~!~!~!~!
+		#might want a try catch here(for detailed message) incase booking fails !~!~!~~!~!~!~!~!~!~!~!~!!
+		#seat # is none, will be assigned when passengers check in at airport
+		queryStr = "INSERT INTO bookings VALUES(ticketNum, flightnum1, fare1, None)"
+		queryStr = queryStr.replace("ticketNum", ticketNum)
+		queryStr = queryStr.replace("flightNum1", flightNum1)
+		queryStr = queryStr.replace("fare1", fare1)
+		queryStr = queryStr.replace("None", None)
 		curs.execute(queryStr)
-    		
-    		
+		
+		
 		if flightnum2 != -1 and fare2 != -1:
 			queryStr = "SELECT price FROM flight_fares WHERE fare=fare2"
 			queryStr = queryStr.replace("fare2", fare2)
@@ -85,29 +85,29 @@ def createBooking( thisUser, flightnum1, fare1, flightnum2 = -1, fare2 = -1):
 			price += curs.fetch()
 			queryStr = "INSERT INTO bookings VALUES(ticketNum, flightnum2, fare2, None)"
 			queryStr = queryStr.replace("ticketNum", ticketNum)
-    			queryStr = queryStr.replace("flightNum2", flightNum2)
-    			queryStr = queryStr.replace("fare2", fare2)
-    			queryStr = queryStr.replace("None", None)
+			queryStr = queryStr.replace("flightNum2", flightNum2)
+			queryStr = queryStr.replace("fare2", fare2)
+			queryStr = queryStr.replace("None", None)
 			curs.execute(queryStr)	
-    		
+		
 		queryStr = "INSERT INTO tickets VALUES(ticketNum, passengerName, passengerEmail, price"
 		queryStr = queryStr.replace("ticketNum", ticketNum)
 		queryStr = queryStr.replace("pasengerName", passengerName)
 		queryStr = queryStr.replace("passengerEmail", passengerEmail)
 		queryStr = queryStr.replace("price", price)
 		curs.execute(queryStr)
-    		
-    		#assuming SQL exception if above failed
+		
+		#assuming SQL exception if above failed
 		print("Your booking was successful!\nHere is your ticket number: " + ticketNum)
-    				
-
-    	
-
+		
+		
+		
+		
 		#OLD BELOW
 		#OLD BELOW
 		#OLD BELOW
 		"""data = [('Quadbury', 101, 7.99, 0, 0), ('Smarties',102,6.99,1,2)]
-
+		
 		curs.bindarraysize = 2
 		curs.setinputsizes(32, int, float, int, int)
 		curs.executemany("INSERT INTO TOFFEES(T_NAME, SUP_ID, PRICE, SALES, TOTAL) "
