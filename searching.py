@@ -1,5 +1,7 @@
 import cx_Oracle
 import time
+import math
+from operator import itemgetter
 
 ''' Uses: 
 		1. Prompt user for a source, destination and departure date 
@@ -44,44 +46,120 @@ def check_airport(src,dst,dep_date):
 	query = "select flightno, src, dst, dep_time, arr_time, price, seats FROM available_flights  WHERE to_char(dep_date,'DD/MM/YYYY')=:depature_date AND src = :src AND dst = :dst ORDER BY price" # WHERE city = :src"
 	curs.execute(query,depature_date=dep_date, src = src, dst = dst)
 	rows = curs.fetchall()
-	
-	'''Sooo this stuff doesn't work, if anyone can figure out why let me know ASAP'''
-	if not rows:
-	   print("No airport code found")	
-	   q = "select UPPER(city) FROM airports WHERE UPPER(city) = :city"
-	   curs.execute(q,city=src) 
-	   rows2 = curs.fetchall() 
-	   print(rows2)
-	   if not len(rows2): 
-	       print("Nothing to show")
-	   else: 
-	   	for row in rows2:
-	   		print(row[0])
-	else:
+	x = 0
+	all_flights = []
+	if rows: 
 
-		print("")
-		print("Avaliable Flights:")
-		print("")
+		for row in rows: 
+			current = [0,0,0,0,0,0,0,0,0,0]
+			#flight number
+			current[0] = row[0]
 
-		for row in rows:
-			dep = row[3]
-			dep.strftime('%m/%d/%y')
-			dep= str(dep)
+			#src 
+			current[1] = row[1]
 
-			arr = row[3]	
-			arr.strftime('%m/%d/%y')
-			arr= str(arr)
+			#dst
+			current[2] = row[2]
 
-			print("Flight Number:"+row[0])
-			print("From "+row[1]+ " to "+row[2])
-			print("Depature: "+dep)
-			print("Arrival:" + arr)
-			print("Price: " + str(row[5]))
-			print("Seats Left: "+ str(row[6]))
-			print(" ")
+			#dep_time
+			current[3] = row[3]
+
+			#arr_time 
+			current[4] = row[4]
+
+			#price
+			current[5] = row[5]
+
+			#seats 
+			current[6] = row[6]
+
+			#the next 3 are null because no connection 
+			current[7] = ""
+			current[8] = ""
+			current[9] = ""
+
+			all_flights.append(current)
+
+
+	query = "select a1.flightno, a1.src, a2.dst, a1.dep_time, a2.arr_time, a1.price, a2.price, a1.seats, a2.seats, a1.arr_time, a2.dep_time, a1.dst  from available_flights a1, available_flights a2 WHERE a1.src = :src AND a2.dst = :dst AND to_char(a2.dep_date,'DD/MM/YYYY')=:dep_date AND a1.dst = a2.src AND a1.dep_date = a2.dep_date ORDER BY (a1.price+a2.price)"
+	curs.execute(query,src = src,dst = dst, dep_date = dep_date)
+	rows = curs.fetchall()
+
+	if rows: 
+		for row in rows: 
+			current = [0,0,0,0,0,0,0,0,0,0]
+			#flight number
+			current[0] = row[0]
+
+			#src 
+			current[1] = row[1]
+
+			#dst
+			current[2] = row[2]
+
+			#dep_time
+			current[3] = row[3]
+
+			#arr_time 
+			current[4] = row[4]
+
+			#price
+			current[5] = row[5]+row[6]
+
+			#seats 
+			current[6] = abs(row[7]-row[8])
+
+			#connection?	
+			current[7]=1 
+
+			#Where is the connection
+			current[8] = row[11]
+
+			#Layover time
+			current[9] = row[9] - row[10]
+
+			all_flights.append(current)
+
+	chooseSort(all_flights)
 
 	curs.close()
 	con.close()
+
+def print_flights(flights):
+	
+	for flight in flights: 
+		print("Flight Number: " + str(flight[0]))
+		print("From: " + str(flight[1]) + " to " + str(flight[2]))
+		print("Departure Time:" + str(flight[3]))
+		print("Arrival Time: " + str(flight[4]))
+		print("Price: " + str(flight[5]))
+		print("Seats Available: " + str(flight[6]))
+
+		if flight[7] == 1: 
+			print("This flight has a connection in " + str(flight[8]))
+			print("Layover Time: "+ str(flight[9]))
+		else: 
+			print("This is a direct flight")
+		print(" ")
+
+
+
+def chooseSort(flights):
+	flights1 = sort_by_price(flights)
+	print_flights(flights1)
+
+	sortby = input("Would you like to sort by number of connections (y/n):")
+	if (sortby.upper() == 'Y'):
+		print_flights(flights)
+	elif (sortby.upper == 'N'):
+		print("Return to menu here")
+	else: 
+		print("Invalid Option")
+
+def sort_by_price(flights):
+	sorted(flights,key=itemgetter(5))
+	return flights
+
 
 if __name__ == '__main__':	
 	con = cx_Oracle.connect('lexie','santaclause1','gwynne.cs.ualberta.ca:1521/CRS')
