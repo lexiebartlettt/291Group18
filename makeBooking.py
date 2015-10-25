@@ -48,7 +48,7 @@ def createBooking( thisUser, flightnum1, fare1, flightnum2 = -1, fare2 = -1):
 		curs.execute(queryStr)
 		newUser = curs.fetch()
 		
-		if newUser=0:
+		if newUser==0:
 			passengerCountry = input("Your country [%s]: " % getpass.getuser())
 			if not passengerCountry:
 				passengerCountry=getpass.getuser()
