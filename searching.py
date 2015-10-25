@@ -1,5 +1,5 @@
 import cx_Oracle
-
+import time
 
 ''' Uses: 
 		1. Prompt user for a source, destination and departure date 
@@ -33,35 +33,59 @@ def search(src, dest, dep_date):
 def start_search():
 	src = input("Enter source:")
 	dest = input("Enter destination:")
-	dep_date = input("Enter departure date:")
+	dep_date = input("Enter departure date (DD/MM/YYYY):")
 
 	check_airport(src,dest,dep_date)
 
 def check_airport(src,dst,dep_date):
 	src=src.upper()
 	dst=dst.upper()
-	query ="select flightno from flights where UPPER(src) = :src AND UPPER(dst) = :dst" 
-	#query = "select city FROM airports WHERE UPPER(city) = :fuck" # WHERE city = :src"
-	curs.execute(query, src = src, dst = dst)
+	#query ="select flightno from flights where UPPER(src) = :src AND UPPER(dst) = :dst" 
+	query = "select flightno, src, dst, dep_time, arr_time, price, seats FROM available_flights  WHERE to_char(dep_date,'DD/MM/YYYY')=:depature_date AND src = :src AND dst = :dst ORDER BY price" # WHERE city = :src"
+	curs.execute(query,depature_date=dep_date, src = src, dst = dst)
 	rows = curs.fetchall()
-	'''if not rows:
-	   print(src)
-	   con.commit()
-	   #q = "SELECT f.flightno FROM flights f, airports a1, airports a2 WHERE f.src = a1.acode AND f.dst = a2.acode AND UPPER(a1.city) = UPPER(:source)" 
-	   #q = "select acode FROM airports WHERE UPPER(city) = :source"
-	   curs.execute(q,source =src) 
-	   rows = curs.fetchall() 
-	   print(rows)
-	   for row in rows: 
-	       print(row[0])'''
+	
+	'''Sooo this stuff doesn't work, if anyone can figure out why let me know ASAP'''
+	if not rows:
+	   print("No airport code found")	
+	   q = "select UPPER(city) FROM airports WHERE UPPER(city) = :city"
+	   curs.execute(q,city=src) 
+	   rows2 = curs.fetchall() 
+	   print(rows2)
+	   if not len(rows2): 
+	       print("Nothing to show")
+	   else: 
+	   	for row in rows2:
+	   		print(row[0])
+	else:
 
-	for row in rows:
-		print(row[0])
+		print("")
+		print("Avaliable Flights:")
+		print("")
+
+		for row in rows:
+			dep = row[3]
+			dep.strftime('%m/%d/%y')
+			dep= str(dep)
+
+			arr = row[3]	
+			arr.strftime('%m/%d/%y')
+			arr= str(arr)
+
+			print("Flight Number:"+row[0])
+			print("From "+row[1]+ " to "+row[2])
+			print("Depature: "+dep)
+			print("Arrival:" + arr)
+			print("Price: " + str(row[5]))
+			print("Seats Left: "+ str(row[6]))
+			print(" ")
 
 	curs.close()
 	con.close()
-con = cx_Oracle.connect('lexie','santaclause1','gwynne.cs.ualberta.ca:1521/CRS')
 
-curs = con.cursor()
+if __name__ == '__main__':	
+	con = cx_Oracle.connect('lexie','santaclause1','gwynne.cs.ualberta.ca:1521/CRS')
 
-start_search()
+	curs = con.cursor()
+
+	start_search()
