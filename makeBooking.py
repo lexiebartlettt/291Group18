@@ -7,16 +7,16 @@ import getpass # the package for getting password from user without displaying i
 
 
 #connect to database
-	# get username
-	user = input("Username [%s]: " % getpass.getuser())
-	if not user:
-    		user=getpass.getuser()
-	
-	# get password
-	pw = getpass.getpass()
+# get username
+user = input("Username [%s]: " % getpass.getuser())
+if not user:
+	user=getpass.getuser()
 
-	# The URL we are connnecting to
-	conString=''+user+'/' + pw +'@gwynne.cs.ualberta.ca:1521/CRS'
+# get password
+pw = getpass.getpass()
+
+# The URL we are connnecting to
+conString=''+user+'/' + pw +'@gwynne.cs.ualberta.ca:1521/CRS'
 
 
 
