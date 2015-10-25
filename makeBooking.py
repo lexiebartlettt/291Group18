@@ -142,4 +142,4 @@ def createBooking( thisUser, flightnum1, fare1, flightnum2 = -1, fare2 = -1):
 		
 # code for testing?
 if __name__ == "__main__":
-    createBooking(AC499)
+    createBooking(None, "AC499", "C")
