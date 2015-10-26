@@ -4,12 +4,12 @@
 2. Searching for flights - Lexie
 3. Making a Booking - Fred
 4. List existing bookings by users - Bradley - Done
-5. Cancel bookings
+5. Cancel bookings - Fred
 6. Logout -Bradley - Done
 7. Airline agents: Record a flight depature - Brad
 8. Record a flight arrival - Brad
 9. Added #1 - Lexie: #1
-10. Added #2
+10. Added #2 - Lexie: #3
 
 Design Document: 
 1. 

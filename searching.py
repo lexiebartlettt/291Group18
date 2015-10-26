@@ -29,20 +29,56 @@ from operator import itemgetter
 
 		'''
 
-def search(src, dest, dep_date):
-	print ("here")
 
+#gathers user input
 def start_search():
+
 	src = input("Enter source:")
 	dest = input("Enter destination:")
 	dep_date = input("Enter departure date (DD/MM/YYYY):")
+	party_size = input("Enter how many people you are booking for:")
+	round_trip = input("Would you like to book a round trip? (y/n)")
 
-	check_airport(src,dest,dep_date)
+	#They want a round trip
+	if (round_trip.upper() == 'Y'): 
+		return_date = input("Enter a return date (DD/MM/YYYY):")
+		print("Trips: ")
+		going = check_airport(src, dest, dep_date)
+		chooseSort(going,party_size)
+		print("")
+		print("Return Trips: ")
+		coming = check_airport(dest, src, return_date)
+		chooseSort(coming,party_size)
 
+		book = input("Would you like to book a flight? (y/n)")
+
+		if (book.upper() == 'Y'): 
+			print("Go to booking code here")
+		else: 
+			print("Go to menu here")
+
+	#They don't want a round trip
+	elif (round_trip.upper() == 'N'):
+		all_flights = check_airport(src,dest,dep_date)
+		chooseSort(all_flights, party_size)
+		book = input("Would you like to book a flight? (y/n)")
+
+		if (book.upper() == 'Y'): 
+			print("Go to booking code here")
+		else: 
+			print("Go to menu here")
+
+	#They suck at entering letters
+	else: 
+		print("Invalid Option")
+		start_search()
+
+
+#SQL queries for airport searches
 def check_airport(src,dst,dep_date):
 	src=src.upper()
 	dst=dst.upper()
-	#query ="select flightno from flights where UPPER(src) = :src AND UPPER(dst) = :dst" 
+
 	query = "select flightno, src, dst, dep_time, arr_time, price, seats FROM available_flights  WHERE to_char(dep_date,'DD/MM/YYYY')=:depature_date AND src = :src AND dst = :dst ORDER BY price" # WHERE city = :src"
 	curs.execute(query,depature_date=dep_date, src = src, dst = dst)
 	rows = curs.fetchall()
@@ -120,41 +156,59 @@ def check_airport(src,dst,dep_date):
 
 			all_flights.append(current)
 
-	chooseSort(all_flights)
+	return all_flights
 
-	curs.close()
-	con.close()
+def getAcode(city): 
+	city = 'EDMONTON'
+	query = "select * from airports WHERE UPPER(city) = :city"
+	curs.execute(query, city = city)
+	rows = curs.fetchall()
 
-def print_flights(flights):
+	for row in rows: 
+		print(row[0])
+
+
+
+def print_flights(flights, party_size):
 	
 	for flight in flights: 
-		print("Flight Number: " + str(flight[0]))
-		print("From: " + str(flight[1]) + " to " + str(flight[2]))
-		print("Departure Time:" + str(flight[3]))
-		print("Arrival Time: " + str(flight[4]))
-		print("Price: " + str(flight[5]))
-		print("Seats Available: " + str(flight[6]))
+		if(int(party_size) <= flight[6]):
+			print("Flight Number: " + str(flight[0]))
+			print("From: " + str(flight[1]) + " to " + str(flight[2]))
+			print("Departure Time:" + str(flight[3]))
+			print("Arrival Time: " + str(flight[4]))
+			print("Price: " + str(flight[5]))
+			print("Seats Available: " + str(flight[6]))
 
-		if flight[7] == 1: 
-			print("This flight has a connection in " + str(flight[8]))
-			print("Layover Time: "+ str(flight[9]))
-		else: 
-			print("This is a direct flight")
-		print(" ")
+			if flight[7] == 1: 
+				print("This flight has a connection in " + str(flight[8]))
+				print("Layover Time: "+ str(flight[9]))
+			else: 
+				print("This is a direct flight")
+			print(" ")
+		else:	
+			print("Flight " + flight[0] + " is full")
+			print("")
 
 
 
-def chooseSort(flights):
+def chooseSort(flights, party_size):
 	flights1 = sort_by_price(flights)
-	print_flights(flights1)
-
-	sortby = input("Would you like to sort by number of connections (y/n):")
-	if (sortby.upper() == 'Y'):
-		print_flights(flights)
-	elif (sortby.upper == 'N'):
-		print("Return to menu here")
-	else: 
-		print("Invalid Option")
+	if(len(flights)==0): 
+		print("No flights matching your criteria")
+		print("")
+		#This is where the city 
+	else:
+		print_flights(flights1, party_size)
+		sortby = input("Would you like to sort by number of connections (y/n):")
+		if (sortby.upper() == 'Y'):
+			print_flights(flights,party_size)
+			return
+		elif (sortby.upper() == 'N'):
+			return
+		else: 
+			print("Invalid Option")
+			return
 
 def sort_by_price(flights):
 	sorted(flights,key=itemgetter(5))
@@ -167,3 +221,6 @@ if __name__ == '__main__':
 	curs = con.cursor()
 
 	start_search()
+
+	curs.close()
+	con.close()

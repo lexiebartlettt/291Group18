@@ -22,18 +22,12 @@ conString=''+user+'/' + pw +'@gwynne.cs.ualberta.ca:1521/CRS'
 
 def createBooking( thisUser, flightnum1, fare1, flightnum2 = -1, fare2 = -1):
 	
-	# SQL statement to execute
-	createStr = ("create table TOFFEES "
-	"(T_NAME VARCHAR(32) PRIMARY KEY, SUP_ID INTEGER, PRICE FLOAT, SALES INTEGER, TOTAL INTEGER)")
-	
 	try:
 		# Establish a connection in Python
 		connection = cx_Oracle.connect(conString)
 		
 		# create a cursor 
 		curs = connection.cursor()
-		curs.execute("drop table toffees")
-		curs.execute(createStr)
 		
 		#get name
 		passengerName = input("Your name [%s]: " % getpass.getuser())
@@ -100,37 +94,6 @@ def createBooking( thisUser, flightnum1, fare1, flightnum2 = -1, fare2 = -1):
 		#assuming SQL exception if above failed
 		print("Your booking was successful!\nHere is your ticket number: " + ticketNum)
 		
-		
-		
-		
-		#OLD BELOW
-		#OLD BELOW
-		#OLD BELOW
-		"""data = [('Quadbury', 101, 7.99, 0, 0), ('Smarties',102,6.99,1,2)]
-		
-		curs.bindarraysize = 2
-		curs.setinputsizes(32, int, float, int, int)
-		curs.executemany("INSERT INTO TOFFEES(T_NAME, SUP_ID, PRICE, SALES, TOTAL) "
-                                    "VALUES (:1, :2, :3, :4, :5)", data)
-		#curs.execute("INSERT INTO TOFFEES "
-		#"VALUES('Quadbury',101,7.99,0,0)")
-		connection.commit()
-		
-		# executing a query
-		curs.execute("SELECT * from TOFFEES")
-		# get all data and print it
-		rows = curs.fetchall()
-		for row in rows:
-			print(row)
-		
-		# getting metadata
-		rows = curs.description
-		columnCount = len(rows)
-		# display column names and type
-		# (name, type, display_size,internal_size,precision,scale,null_ok)
-		for row in rows:
-			print(row[0]," ",row[1])
-"""
 		# close the connection
 		curs.close()
 		connection.close()
