@@ -20,7 +20,7 @@ def cancelBooking(ticktNum, flightNum, depDate, curs):
     queryStr = queryStr.replace("newPrice", newPrice)
     curs.execute(queryStr)
     
-    queryStr = "DELETE FROM bookings WHERE(tno = ticketNum and flightno = 'flightNum')
+    queryStr = "DELETE FROM bookings WHERE(tno = ticketNum and flightno = 'flightNum')"
     queryStr = queryStr.replace("ticketNum", ticketNum)
     queryStr = queryStr.replace("flightNum", flightNum)
     curs.execute(queryStr)
