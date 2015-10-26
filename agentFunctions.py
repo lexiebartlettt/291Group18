@@ -11,11 +11,11 @@ def isInt(num):
 		return(False)
 
 def isTime(depTime):
-	if len(depTime) != 5:
+	if len(depTime) != 5: #only supported format is 00:00
 		print("Input not recogonised.")
 		return(False)
-	elif isInt(depTime[0:2]) and isInt(depTime[3:]) and depTime[2] == ":":
-		if int(depTime[0:2]) >= 0 and int(depTime[0:2]) <= 23:
+	elif isInt(depTime[0:2]) and isInt(depTime[3:]) and depTime[2] == ":": #checks pattern against 00:00
+		if int(depTime[0:2]) >= 0 and int(depTime[0:2]) <= 23: #makes sure integers are valid for time constraints
 			if int(depTime[3:]) >= 0 and int(depTime[3:]) <= 59:
 				return (True)
 			else:
@@ -33,13 +33,13 @@ def recordDep(curs):
 	#clearScreen.clearScreen()
 	flightno = input("Please Enter a flight number: ")
 	queryStr = "Select flightno, to_char(dep_date, 'dd-mon-yy') from sch_flights where flightno = " +"'"+flightno+"'"
-	
+	#above query returns differnt dates the flight flies on
 	try:
 		curs.execute(queryStr)
 
 		flightDates = curs.fetchall()
 
-		if len(flightDates) == 0:
+		if len(flightDates) == 0: #i.e. no sch_flights found for flight number.
 			clearScreen.clearScreen()
 			print("Flight " + flightno + " not found")
 			recordDep(curs)
@@ -48,8 +48,9 @@ def recordDep(curs):
 		print("Row   " + "Flightno    " + "Date")
 	
 		i = 0
+		# for loop prints data in a formatted table
 		for flightDate in flightDates:
-			print(str(i) + (" " * (6-len(str(i)))) +
+			print(str(i) + (" " * (6-len(str(i)))) + 
 			flightDate[0] + (" " * (12-len(flightno))) +
 			flightDate[1])
 			i += 1
@@ -68,7 +69,6 @@ def recordDep(curs):
 						depTime = input("Input departure time in following format '00:00'\n")
 						if isTime(depTime):
 							updateDepTime(curs, flightDates[rowNum][0], depTime, flightDates[rowNum][1])
-							#print("Winner winner")
 							return()
 				else:
 					print("Row Number out of range.")
@@ -112,13 +112,13 @@ def recordArr(curs):
 	#clearScreen.clearScreen()
 	flightno = input("Please Enter a flight number: ")
 	queryStr = "Select flightno, to_char(dep_date, 'dd-mon-yy') from sch_flights where flightno = " +"'"+flightno+"'"
-	
+	#above query returns flight dates for specified flight number
 	try:
 		curs.execute(queryStr)
 
 		flightDates = curs.fetchall()
 
-		if len(flightDates) == 0:
+		if len(flightDates) == 0: # no scheduled flights for this flight number
 			clearScreen.clearScreen()
 			print("Flight " + flightno + " not found")
 			recordDep(curs)
@@ -127,6 +127,7 @@ def recordArr(curs):
 		print("Row   " + "Flightno    " + "Date")
 	
 		i = 0
+		#below for loop prints results in a formatted table
 		for flightDate in flightDates:
 			print(str(i) + (" " * (6-len(str(i)))) +
 			flightDate[0] + (" " * (12-len(flightno))) +
