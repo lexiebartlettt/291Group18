@@ -31,8 +31,8 @@ from operator import itemgetter
 
 
 #gathers user input
-def start_search():
-
+def start_search(curs):
+	
 	src = input("Enter source:")
 	dest = input("Enter destination:")
 	dep_date = input("Enter departure date (DD/MM/YYYY):")
@@ -40,14 +40,14 @@ def start_search():
 	round_trip = input("Would you like to book a round trip? (y/n)")
 
 	#They want a round trip
-	if (round_trip.upper() == 'Y'): 
+	if (round_trip.upper() == 'Y'):
 		return_date = input("Enter a return date (DD/MM/YYYY):")
 		print("Trips: ")
-		going = check_airport(src, dest, dep_date)
+		going = check_airport(src, dest, dep_date,curs)
 		chooseSort(going,party_size)
 		print("")
 		print("Return Trips: ")
-		coming = check_airport(dest, src, return_date)
+		coming = check_airport(dest, src, return_date,curs)
 		chooseSort(coming,party_size)
 
 		book = input("Would you like to book a flight? (y/n)")
@@ -59,7 +59,7 @@ def start_search():
 
 	#They don't want a round trip
 	elif (round_trip.upper() == 'N'):
-		all_flights = check_airport(src,dest,dep_date)
+		all_flights = check_airport(src,dest,dep_date,curs)
 		chooseSort(all_flights, party_size)
 		book = input("Would you like to book a flight? (y/n)")
 
@@ -71,11 +71,11 @@ def start_search():
 	#They suck at entering letters
 	else: 
 		print("Invalid Option")
-		start_search()
+		start_search(curs)
 
 
 #SQL queries for airport searches
-def check_airport(src,dst,dep_date):
+def check_airport(src,dst,dep_date, curs):
 	src=src.upper()
 	dst=dst.upper()
 
@@ -158,10 +158,11 @@ def check_airport(src,dst,dep_date):
 
 	return all_flights
 
-def getAcode(city): 
+def getAcode(city, curs): 
 	city = 'EDMONTON'
-	query = "select * from airports WHERE UPPER(city) = :city"
-	curs.execute(query, city = city)
+	query = "select * from airports WHERE UPPER(city) = ':city'"
+	query = query.replace(":city",city)	
+	curs.execute(query)
 	rows = curs.fetchall()
 
 	for row in rows: 
@@ -220,7 +221,7 @@ if __name__ == '__main__':
 
 	curs = con.cursor()
 
-	start_search()
+	start_search(curs)
 
 	curs.close()
 	con.close()
