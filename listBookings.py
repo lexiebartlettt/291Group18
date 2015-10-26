@@ -105,7 +105,7 @@ def listDetailBooking(curs, ticket, flightno, dep_date):
 			dep_date = bookings[0][7]
 			#print(str(ticketno) + " " + flightno + " " + dep_date)			
 			cancelBooking.cancelBooking(ticketno, flightno, dep_date, curs)
-			print("Cancel booking")
+			#print("Cancel booking")
 			input()
 
 		#input("Press 'Enter' to return.")
