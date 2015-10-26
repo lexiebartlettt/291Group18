@@ -73,7 +73,11 @@ def userLogin(curs):
 
 
 def connect():
-	user=getpass.getuser()
+
+	user = input("Username [%s]: " % getpass.getuser())
+	if not user:
+    		user=getpass.getuser()
+
 	pw = getpass.getpass()
 
 	connStr = ''+user+'/' + pw + '@gwynne.cs.ualberta.ca:1521/CRS'
