@@ -1,6 +1,6 @@
 import cx_Oracle # the package used for accessing Oracle in Python
 
-def cancelBooking(ticketNum, flightNum, depDate, fareType curs):
+def cancelBooking(ticketNum, flightNum, depDate, fareType, curs):
   try:
     curs.connection.begin()
     
@@ -17,9 +17,9 @@ def cancelBooking(ticketNum, flightNum, depDate, fareType curs):
     fetcher = curs.fetchall()
     newPrice = fetcher[0][0] - refund
     
-    queryStr = "UPDATE tickets SET price_paid = 'newPrice' WHERE tno = ticketNum"
+    queryStr = "UPDATE tickets SET paid_price = newPrice WHERE tno = ticketNum"
     queryStr = queryStr.replace("ticketNum", str(ticketNum))
-    queryStr = queryStr.replace("newPrice", newPrice)
+    queryStr = queryStr.replace("newPrice", str(newPrice))
     curs.execute(queryStr)
 
     queryStr = "DELETE FROM bookings WHERE(tno = ticketNum and flightno = 'flightNum' and dep_date = to_date('depDate', 'dd-mon-yy'))"
