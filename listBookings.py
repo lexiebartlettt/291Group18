@@ -2,6 +2,7 @@ import sys
 import cx_Oracle
 import user
 import clearScreen
+import cancelBooking
 
 def isInt(num):
 	try:
@@ -102,8 +103,8 @@ def listDetailBooking(curs, ticket, flightno, dep_date):
 			ticketno = bookings[0][0]
 			flightno = bookings[0][2]
 			dep_date = bookings[0][7]
-			print(ticketno + " " + fligtno + " " + dep_date)			
-			cancelBooking(ticketno, flightno, dep_date, curs)
+			#print(str(ticketno) + " " + flightno + " " + dep_date)			
+			cancelBooking.cancelBooking(ticketno, flightno, dep_date, curs)
 			print("Cancel booking")
 			input()
 
