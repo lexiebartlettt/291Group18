@@ -5,6 +5,9 @@ import getpass # the package for getting password from user without displaying i
 def createBooking( curs, thisUser, flightnum1, fare1, depDate1, flightnum2 = -1, fare2 = -1, depDate2 = -1):
 	
 	try:
+		#begins new transaction
+		curs.connection.begin()
+		
 		#get name
 		passengerName = input("Your name [%s]: " % getpass.getuser())
 		if not passengerName:
@@ -29,7 +32,8 @@ def createBooking( curs, thisUser, flightnum1, fare1, depDate1, flightnum2 = -1,
 			queryStr = queryStr.replace("passengerCountry", passengerCountry)
 			curs.execute(queryStr)
 		
-		#must create unique ticket number. Will this work with multiple users?
+		#must create unique ticket number.
+		#accidental duplicate handled by database exception
 		curs.exucute("SELECT MAX(tno) FROM bookings")
 		ticketNum = curs.fetch() + 1
 		queryStr = "SELECT price FROM flight_fares WHERE fare=fare1"
@@ -74,6 +78,7 @@ def createBooking( curs, thisUser, flightnum1, fare1, depDate1, flightnum2 = -1,
 
 	except cx_Oracle.DatabaseError as exc:
 		error, = exc.args
+		curs.connetion.rollback() #rolls back transaction if fails
 		print( sys.stderr, "Oracle code:", error.code)
 		print( sys.stderr, "Oracle message:", error.message)
 		
