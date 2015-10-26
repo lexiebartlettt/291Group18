@@ -96,7 +96,14 @@ def listDetailBooking(curs, ticket, flightno, dep_date):
 			item = str(columns[i][0]) + " : " + str(bookings[0][i])
 			print(item)
 
-		input("Press 'Enter' to return.")
+		cancel = input("Type 'Cancel' to cancel this booking. Press 'Enter' to return to main menu.\n")
+
+		if cancel.strip().lower() == 'cancel':
+			#cancelBooking()
+			print("Cancel booking")
+			input()
+
+		#input("Press 'Enter' to return.")
 	except cx_Oracle.DatabaseError as exc:
 		error, = exc.args
 		print (sys.stderr, "Oracle code:", error.code)
