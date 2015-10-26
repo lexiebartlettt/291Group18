@@ -150,7 +150,7 @@ def registerUser(curs):
 		curs.execute(queryStr)
 		curs.connection.commit()
 		
-		isAgent = false
+		isAgent = False
 		user1 = user.User(uname, isAgent)
 		menu.displayMenu(curs, user1)
 		sys.exit()
