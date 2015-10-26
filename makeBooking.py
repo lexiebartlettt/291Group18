@@ -19,7 +19,8 @@ def createBooking( curs, thisUser, flightnum1, fare1, depDate1, flightnum2 = -1,
 		queryStr = queryStr.replace("passengerEmail", passengerEmail)
 		
 		curs.execute(queryStr)
-		newUser = curs.fetch()
+		fetcher = curs.fetchAll()
+		newUser = fetcher[0][0]
 		
 		if newUser==0:
 			passengerCountry = input("Your country [%s]: " % getpass.getuser())
@@ -39,7 +40,8 @@ def createBooking( curs, thisUser, flightnum1, fare1, depDate1, flightnum2 = -1,
 		queryStr = "SELECT price FROM flight_fares WHERE fare=fare1"
 		queryStr = queryStr.replace("fare1", fare1)
 		curs.execute(queryStr)
-		price = curs.fetch()
+		fetcher = curs.fetchAll()
+		price = fetcher[0][0]
 		
 		#double check seats are still free!~~!!~!~~!!~!~~!!~~!~!~!~!~!~!~!~!~!~!~!
 		#might want a try catch here(for detailed message) incase booking fails !~!~!~~!~!~!~!~!~!~!~!~!!
