@@ -45,7 +45,7 @@ def displayMenu(curs, user1):
 		giveOptions(user1)
 		userInput = input()
 		if userInput.strip().lower()  == 'search':
-			searching.start_search(curs)
+			searching.start_search(curs,user1)
 			clearScreen.clearScreen()	
 
 		elif userInput.strip().lower() == 'book':

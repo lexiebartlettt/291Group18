@@ -1,6 +1,8 @@
 import cx_Oracle
 import time
 import math
+import menu
+import makeBooking
 from operator import itemgetter
 
 ''' Uses: 
@@ -31,7 +33,7 @@ from operator import itemgetter
 
 
 #gathers user input
-def start_search(curs):
+def start_search(curs,user1):
 	
 	src = input("Enter source:")
 	dest = input("Enter destination:")
@@ -68,25 +70,34 @@ def start_search(curs):
 		book = input("Would you like to book a flight? (y/n)")
 
 		if (book.upper() == 'Y'): 
-			print("Go to booking code here")
+			going_option = input("Please enter option number for Flight\n")
+			coming_option = input("Please enter option number for the Return Flight")
+			
+			going_option = int(going_option)
+			coming_option = int(coming_option)
+
+			makeBooking.createBooking(curs, user1,going[going_option][0], going[going_option][12], going[going_option][3],-1, -1)
+			makeBooking.createBooking(curs, user1,coming[coming_option][0], coming[coming_option][12], coming[coming_option][3],-1, -1)
+			
 		else: 
-			print("Go to menu here")
+			return
 
 	#They don't want a round trip
 	elif (round_trip.upper() == 'N'):
 		all_flights = check_airport(src,dest,dep_date,curs)
 		chooseSort(all_flights, party_size)
 		book = input("Would you like to book a flight? (y/n)")
-
+		option = input("Please enter option number for Flight\n")
+		option = int(option)
 		if (book.upper() == 'Y'): 
-			print("Go to booking code here")
+			makeBooking.createBooking(curs, user1,all_flights[option][0], all_flights[option][12], all_flights[option][3],-1, -1)
 		else: 
 			print("Go to menu here")
 
 	#They suck at entering letters
 	else: 
 		print("Invalid Option")
-		start_search(curs)
+		start_search(curs,user1)
 
 
 
@@ -193,24 +204,26 @@ def getAcode(city, curs):
 	city = city.upper()
 	results = []
 
-	query = "select acode, city, name from airports WHERE UPPER(city) = ':city'"
+	query = "select acode, city, name from airports WHERE UPPER(city) LIKE '%:city%'"
 	query = query.replace(":city",city)	
 	curs.execute(query)
 	rows = curs.fetchall()
 	for row in rows: 
 		results.append(row)
 
-	query = "select acode, city, name from airports WHERE UPPER(name) = '%:name%'"
+	query = "select acode, city, name from airports WHERE UPPER(name) LIKE '%:name%'"
+	query = query.replace(":name",city)	
 	curs.execute(query)
 	rows = curs.fetchall()
+
 	for row in rows: 
 		results.append(row)
 
-	print(results)
 	if not results:
 		return False
 	else:
-		for r in results: 
+		for r in results:
+			print("") 
 			print("Airport Code: " + r[0])
 			print("City:" + r[1])
 			print("Airport Name:" + r[2])
@@ -233,8 +246,10 @@ def checkCodes(code, curs):
 
 def print_flights(flights, party_size):
 	
+	x = 0
 	for flight in flights: 
 		if(int(party_size) <= flight[6]):
+			print("Option:" + str(x))
 			print("Flight Number: " + str(flight[0]))
 			print("From: " + str(flight[1]) + " to " + str(flight[2]))
 			print("Departure Time:" + str(flight[3]))
@@ -252,6 +267,7 @@ def print_flights(flights, party_size):
 		else:	
 			print("Flight " + flight[0] + " is full")
 			print("")
+		x+=1
 
 
 
@@ -278,12 +294,3 @@ def sort_by_price(flights):
 	return flights
 
 
-if __name__ == '__main__':	
-	con = cx_Oracle.connect('lexie','santaclause1','gwynne.cs.ualberta.ca:1521/CRS')
-
-	curs = con.cursor()
-
-	start_search(curs)
-
-	curs.close()
-	con.close()
