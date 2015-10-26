@@ -76,7 +76,9 @@ def createBooking( curs, thisUser, flightnum1, fare1, depDate, flightnum2 = -1, 
 			queryStr = queryStr.replace("flightnum2", flightnum2)
 			curs.execute(queryStr)
 			fetcher = curs.fetchall()
-			price = fetcher[0][0]
+			price2 = fetcher[0][0]
+
+			print (str(price2))
 
 			queryStr = "INSERT INTO bookings VALUES(ticketNum, 'flightnum2', 'fare2', to_date('depDate', 'dd/mm/yy'), NULL)"
 			queryStr = queryStr.replace("ticketNum", str(ticketNum))
@@ -91,6 +93,11 @@ def createBooking( curs, thisUser, flightnum1, fare1, depDate, flightnum2 = -1, 
 		queryStr = queryStr.replace("passengerEmail", passengerEmail)
 		queryStr = queryStr.replace("price", str(price))
 		curs.execute(queryStr)'''
+
+		queryStr = "UPDATE tickets set paid_price = totPrice where tno = ticketNum"
+		queryStr = queryStr.replace("totPrice", str(price+price2))
+		queryStr = queryStr.replace("ticketNum", str(ticketNum))
+		curs.execute(queryStr)
 		
 		curs.connection.commit()
 		#assuming SQL exception if above failed
