@@ -39,6 +39,21 @@ def start_search(curs):
 	party_size = input("Enter how many people you are booking for:")
 	round_trip = input("Would you like to book a round trip? (y/n)")
 
+	srcCheck = checkCodes(src,curs)
+	destCheck = checkCodes(dest,curs)
+
+	if (srcCheck == False): 
+		src = getAcode(src,curs)
+		if (src == False):
+			print("No Airport Matches")
+			return
+
+	if(destCheck == False): 
+		dest = getAcode(dest,curs)
+		if (dest == False):
+			print("No Airport Matches")
+			return
+
 	#They want a round trip
 	if (round_trip.upper() == 'Y'):
 		return_date = input("Enter a return date (DD/MM/YYYY):")
@@ -74,12 +89,13 @@ def start_search(curs):
 		start_search(curs)
 
 
+
 #SQL queries for airport searches
 def check_airport(src,dst,dep_date, curs):
 	src=src.upper()
 	dst=dst.upper()
 
-	query = "select flightno, src, dst, dep_time, arr_time, price, seats FROM available_flights  WHERE to_char(dep_date,'DD/MM/YYYY')=:depature_date AND src = :src AND dst = :dst ORDER BY price" # WHERE city = :src"
+	query = "select flightno, src, dst, dep_time, arr_time, price, seats, fare FROM available_flights  WHERE to_char(dep_date,'DD/MM/YYYY')=:depature_date AND src = :src AND dst = :dst ORDER BY price" # WHERE city = :src"
 	curs.execute(query,depature_date=dep_date, src = src, dst = dst)
 	rows = curs.fetchall()
 	x = 0
@@ -87,7 +103,7 @@ def check_airport(src,dst,dep_date, curs):
 	if rows: 
 
 		for row in rows: 
-			current = [0,0,0,0,0,0,0,0,0,0]
+			current = [0,0,0,0,0,0,0,0,0,0,0,0,0]
 			#flight number
 			current[0] = row[0]
 
@@ -113,17 +129,23 @@ def check_airport(src,dst,dep_date, curs):
 			current[7] = ""
 			current[8] = ""
 			current[9] = ""
+			current[10] = ""
+			current[11] = "" 
+
+			#fare type
+			current[12] = row[7]
+
 
 			all_flights.append(current)
 
 
-	query = "select a1.flightno, a1.src, a2.dst, a1.dep_time, a2.arr_time, a1.price, a2.price, a1.seats, a2.seats, a1.arr_time, a2.dep_time, a1.dst  from available_flights a1, available_flights a2 WHERE a1.src = :src AND a2.dst = :dst AND to_char(a2.dep_date,'DD/MM/YYYY')=:dep_date AND a1.dst = a2.src AND a1.dep_date = a2.dep_date ORDER BY (a1.price+a2.price)"
+	query = "select a1.flightno, a1.src, a2.dst, a1.dep_time, a2.arr_time, a1.price, a2.price, a1.seats, a2.seats, a1.arr_time, a2.dep_time, a1.dst, a2.flightno, a1.fare, a2.fare  from available_flights a1, available_flights a2 WHERE a1.src = :src AND a2.dst = :dst AND to_char(a2.dep_date,'DD/MM/YYYY')=:dep_date AND a1.dst = a2.src AND a1.dep_date = a2.dep_date ORDER BY (a1.price+a2.price)"
 	curs.execute(query,src = src,dst = dst, dep_date = dep_date)
 	rows = curs.fetchall()
 
 	if rows: 
 		for row in rows: 
-			current = [0,0,0,0,0,0,0,0,0,0]
+			current = [0,0,0,0,0,0,0,0,0,0,0,0,0]
 			#flight number
 			current[0] = row[0]
 
@@ -154,21 +176,60 @@ def check_airport(src,dst,dep_date, curs):
 			#Layover time
 			current[9] = row[9] - row[10]
 
+			#connection flightno 
+			current[10] = row[12] 
+
+			#fare type #2 
+			current[11] = row[13]
+
+			#fare type #3 
+			current[12] = row[14]
+
 			all_flights.append(current)
 
 	return all_flights
 
 def getAcode(city, curs): 
-	city = 'EDMONTON'
-	query = "select * from airports WHERE UPPER(city) = ':city'"
+	city = city.upper()
+	results = []
+
+	query = "select acode, city, name from airports WHERE UPPER(city) = ':city'"
 	query = query.replace(":city",city)	
 	curs.execute(query)
 	rows = curs.fetchall()
-
 	for row in rows: 
-		print(row[0])
+		results.append(row)
+
+	query = "select acode, city, name from airports WHERE UPPER(name) = '%:name%'"
+	curs.execute(query)
+	rows = curs.fetchall()
+	for row in rows: 
+		results.append(row)
+
+	print(results)
+	if not results:
+		return False
+	else:
+		for r in results: 
+			print("Airport Code: " + r[0])
+			print("City:" + r[1])
+			print("Airport Name:" + r[2])
+		city = input("Enter Airport Code: ")
+		return city
 
 
+
+def checkCodes(code, curs):
+	code = code.upper()
+	query = "select acode from airports WHERE UPPER(acode) =':code'"
+	query = query.replace(":code",code)
+	curs.execute(query)
+	rows = curs.fetchall()
+
+	if not rows: 
+		return False
+	else: 
+		return True
 
 def print_flights(flights, party_size):
 	
@@ -178,11 +239,12 @@ def print_flights(flights, party_size):
 			print("From: " + str(flight[1]) + " to " + str(flight[2]))
 			print("Departure Time:" + str(flight[3]))
 			print("Arrival Time: " + str(flight[4]))
-			print("Price: " + str(flight[5]))
+			print("Price: " + str(flight[5]) + " Fare Type: " + str(flight[12]))
 			print("Seats Available: " + str(flight[6]))
 
 			if flight[7] == 1: 
 				print("This flight has a connection in " + str(flight[8]))
+				print("Connection Flight Number: " + str(flight[10]))
 				print("Layover Time: "+ str(flight[9]))
 			else: 
 				print("This is a direct flight")
