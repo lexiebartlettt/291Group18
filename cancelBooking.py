@@ -1,14 +1,7 @@
-def cancelBooking(ticktNum, flightNum, fareType):
+import cx_Oracle # the package used for accessing Oracle in Python
+
+def cancelBooking(ticktNum, flightNum, fareType, curs):
   try:
-    # Establish a connection in Python
-		connection = cx_Oracle.connect(conString)
-		# create a cursor 
-		curs = connection.cursor()
-		#get name
-		passengerName = input("Your name [%s]: " % getpass.getuser())
-		if not passengerName:
-			passengerName=getpass.getuser()
-    
     queryStr = "SELECT price FROM flight_fares WHERE(flightno = 'flightNum' and fare = 'fareType')"
     queryStr = queryStr.replace("flightNum", flightNum)
     queryStr = queryStr.replace("fareType", fareType)
@@ -29,12 +22,8 @@ def cancelBooking(ticktNum, flightNum, fareType):
     queryStr = queryStr.replace("ticketNum", ticketNum)
     queryStr = queryStr.replace("flightNum", flightNum)
     curs.execute(queryStr)
-    
-    # close the connection
-		curs.close()
-		connection.close()
-
-	except cx_Oracle.DatabaseError as exc:
-		error, = exc.args
-		print( sys.stderr, "Oracle code:", error.code)
-		print( sys.stderr, "Oracle message:", error.message)
+  
+  except cx_Oracle.DatabaseError as exc:
+    error, = exc.args
+    print( sys.stderr, "Oracle code:", error.code)
+    print( sys.stderr, "Oracle message:", error.message)
