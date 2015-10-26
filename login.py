@@ -174,5 +174,6 @@ def registerUser(curs):
 		
 if __name__ == '__main__':
 	curs = connect()
+	clearScreen.clearScreen()
 	displayLoginScreen(curs)
 	
