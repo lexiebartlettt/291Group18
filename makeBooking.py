@@ -105,9 +105,9 @@ def createBooking( curs, thisUser, flightnum1, fare1, depDate, flightnum2 = -1, 
 		print(queryStr)		
 		error, = exc.args
 		curs.connection.rollback() #rolls back transaction if fails
-		print( "Something went wrong ")
-		print( sys.stderr, "Oracle code:", error.code)
-		print( sys.stderr, "Oracle message:", error.message)
+		print( "Flight or fare type unavailable. Please try again. ")
+		#print( sys.stderr, "Oracle code:", error.code)
+		#print( sys.stderr, "Oracle message:", error.message)
 		input()
 
 
