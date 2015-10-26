@@ -80,9 +80,6 @@ def createBooking( curs, thisUser, flightnum1, fare1, depDate1, flightnum2 = -1,
 	except cx_Oracle.DatabaseError as exc:
 		error, = exc.args
 		curs.connetion.rollback() #rolls back transaction if fails
+		print( "Something went wrong ")
 		print( sys.stderr, "Oracle code:", error.code)
 		print( sys.stderr, "Oracle message:", error.message)
-		
-# code for testing?
-if __name__ == "__main__":
-    createBooking(None, "AC499", "C")
