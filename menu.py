@@ -3,6 +3,9 @@ import clearScreen
 import user
 import listBookings
 import agentFunctions
+import searching
+import booking
+
 
 def giveOptions(user1):
 	
@@ -12,7 +15,6 @@ def giveOptions(user1):
 	print("Type 'List' to list existing bookings.")
 	print("Type 'Logout' to logout.")
 
-	#print(user1.isAgent())	
 	if user1.isAgent():
 		print( "\n Agent Options")
 		print("Type 'Dep' to record a flight departure")
@@ -37,29 +39,36 @@ def logout(curs, user1):
 def displayMenu(curs, user1):
 	
 	clearScreen.clearScreen()	
-	#userInput = input()
 	while True:
 		giveOptions(user1)
 		userInput = input()
 		if userInput.strip().lower()  == 'search':
-			input("Do search.")
-			#search()
-			#break
+			searching.startSearch(curs)
 			clearScreen.clearScreen()	
 
 		elif userInput.strip().lower() == 'book':
-			input("Do booking.")
-			#book()
-			#break
+			clearScreen.clearScreen()
+			flightno = input("Please enter flight number.\n")
+			fareType = input("Please enter fare type. \n")
+			dep_date = input("Please enter departure date in the following format: 'dd/mm/yy' \n")
+			print("Would you like to book a connection?")
+			connect = input()
+
+			flight2 = -1
+			far2 = -1
+			
+			if connect.strip().lower() in ('y', 'yes'):
+				flight2 = input("Please enter second flight number. \n")
+				fare2 = input("Please enter second flight fare type. \n")
+						
+			booking.createBooking(curs, user1, flightno, fareType, flight2, fare2)
 			clearScreen.clearScreen()	
 		elif userInput.strip().lower() == 'list':
 			listBookings.listSummaryBookings(curs, user1)
-			#break
 			clearScreen.clearScreen()	
 		elif userInput.strip().lower() == 'logout':
 			print("Logging out.")
 			logout(curs, user1)
-			#break
 			sys.exit()
 		elif userInput.strip().lower() == 'dep':
 			if user1.isAgent():
