@@ -29,6 +29,8 @@ def logout(curs, user1):
 	
 		curs.execute(queryStr)
 		curs.connection.commit()
+
+		curs.connection.close()
 	
 	except cx_Oracle.DatabaseError as exc:
 		error, = exc.args
@@ -55,13 +57,13 @@ def displayMenu(curs, user1):
 			connect = input()
 
 			flight2 = -1
-			far2 = -1
+			fare2 = -1
 			
 			if connect.strip().lower() in ('y', 'yes'):
 				flight2 = input("Please enter second flight number. \n")
 				fare2 = input("Please enter second flight fare type. \n")
 						
-			makeBooking.createBooking(curs, user1, flightno, fareType, flight2, fare2)
+			makeBooking.createBooking(curs, user1, flightno, fareType, dep_date, flight2, fare2)
 			clearScreen.clearScreen()	
 		elif userInput.strip().lower() == 'list':
 			listBookings.listSummaryBookings(curs, user1)
