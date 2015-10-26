@@ -142,6 +142,7 @@ def registerUser(curs):
 		queryStr = queryStr.replace(":username", uname)
 		queryStr = queryStr.replace(":pwd", pwd)
 
+		curs.connection.begin()		
 		curs.execute(queryStr)
 		curs.connection.commit()
 		
@@ -151,6 +152,7 @@ def registerUser(curs):
 		sys.exit()
 
 	except cx_Oracle.DatabaseError as exc:
+		curs.connection.rollback()		
 		error, = exc.args
 		if error.code == 1:
 			print("Username already taken. Please try again")
