@@ -46,8 +46,8 @@ def createBooking( curs, thisUser, flightnum1, fare1, depDate1, flightnum2 = -1,
 		#double check seats are still free!~~!!~!~~!!~!~~!!~~!~!~!~!~!~!~!~!~!~!~!
 		#might want a try catch here(for detailed message) incase booking fails !~!~!~~!~!~!~!~!~!~!~!~!!
 		#seat # is none, will be assigned when passengers check in at airport
-		queryStr = "INSERT INTO bookings VALUES('ticketNum', 'flightnum1', 'fare1', 'depDate1', 'None')"
-		queryStr = queryStr.replace("ticketNum", ticketNum)
+		queryStr = "INSERT INTO bookings VALUES(ticketNum, 'flightnum1', 'fare1', 'depDate1', 'None')"
+		queryStr = queryStr.replace("ticketNum", str(ticketNum))
 		queryStr = queryStr.replace("flightNum1", flightNum1)
 		queryStr = queryStr.replace("fare1", fare1)
 		queryStr = queryStr.replace("depDate1", depDate1)
@@ -60,16 +60,16 @@ def createBooking( curs, thisUser, flightnum1, fare1, depDate1, flightnum2 = -1,
 			queryStr = queryStr.replace("fare2", fare2)
 			curs.execute(queryStr)
 			price += curs.fetch()
-			queryStr = "INSERT INTO bookings VALUES('ticketNum', 'flightnum2', 'fare2', 'depDate2', 'None')"
-			queryStr = queryStr.replace("ticketNum", ticketNum)
+			queryStr = "INSERT INTO bookings VALUES(ticketNum, 'flightnum2', 'fare2', 'depDate2', 'None')"
+			queryStr = queryStr.replace("ticketNum", str(ticketNum))
 			queryStr = queryStr.replace("flightNum2", flightNum2)
 			queryStr = queryStr.replace("fare2", fare2)
 			queryStr = queryStr.replace("depDate2", depDate2)
 			queryStr = queryStr.replace("None", None)
 			curs.execute(queryStr)	
 		
-		queryStr = "INSERT INTO tickets VALUES('ticketNum', 'passengerName', 'passengerEmail', 'price'"
-		queryStr = queryStr.replace("ticketNum", ticketNum)
+		queryStr = "INSERT INTO tickets VALUES(ticketNum, 'passengerName', 'passengerEmail', 'price'"
+		queryStr = queryStr.replace("ticketNum", str(ticketNum))
 		queryStr = queryStr.replace("pasengerName", passengerName)
 		queryStr = queryStr.replace("passengerEmail", passengerEmail)
 		queryStr = queryStr.replace("price", price)
@@ -77,7 +77,7 @@ def createBooking( curs, thisUser, flightnum1, fare1, depDate1, flightnum2 = -1,
 		
 		curs.connection.commit()
 		#assuming SQL exception if above failed
-		print("Your booking was successful!\nHere is your ticket number: " + ticketNum)
+		print("Your booking was successful!\nHere is your ticket number: " + str(ticketNum))
 
 	except cx_Oracle.DatabaseError as exc:
 		error, = exc.args
