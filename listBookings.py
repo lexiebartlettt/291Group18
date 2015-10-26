@@ -102,8 +102,9 @@ def listDetailBooking(curs, ticket, flightno, dep_date):
 		if cancel.strip().lower() == 'cancel':
 			ticketno = bookings[0][0]
 			flightno = bookings[0][2]
-			dep_date = bookings[0][7]		
-			cancelBooking.cancelBooking(ticketno, flightno, dep_date, curs)
+			dep_date = bookings[0][7]
+			fare = bookings[0][6]	
+			cancelBooking.cancelBooking(ticketno, flightno, dep_date, fare,  curs)
 
 
 	except cx_Oracle.DatabaseError as exc:
