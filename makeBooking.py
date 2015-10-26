@@ -73,6 +73,7 @@ def createBooking( curs, thisUser, flightnum1, fare1, depDate1, flightnum2 = -1,
 		queryStr = queryStr.replace("price", price)
 		curs.execute(queryStr)
 		
+		curs.connection.commit()
 		#assuming SQL exception if above failed
 		print("Your booking was successful!\nHere is your ticket number: " + ticketNum)
 
