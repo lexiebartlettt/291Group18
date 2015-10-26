@@ -18,6 +18,7 @@ def createBooking( curs, thisUser, flightnum1, fare1, depDate, flightnum2 = -1, 
 		queryStr = "SELECT COUNT(*) FROM passengers p WHERE( p.name='passengerName' and p.email='passengerEmail')"
 		queryStr = queryStr.replace("passengerName", passengerName)
 		queryStr = queryStr.replace("passengerEmail", passengerEmail)
+		queryStr = queryStr.replace("''", "'") #not sure why this is happening but it is
 		
 		curs.execute(queryStr)
 		fetcher = curs.fetchall()
@@ -32,6 +33,8 @@ def createBooking( curs, thisUser, flightnum1, fare1, depDate, flightnum2 = -1, 
 			queryStr = queryStr.replace("passengerName", passengerName)
 			queryStr = queryStr.replace("passengerEmail", passengerEmail)
 			queryStr = queryStr.replace("passengerCountry", passengerCountry)
+			queryStr = queryStr.replace("''", "'") #not sure why this is happening but it is
+			
 			curs.execute(queryStr)
 			#curs.connection.commit()
 			#curs.connection.begin()
@@ -53,6 +56,7 @@ def createBooking( curs, thisUser, flightnum1, fare1, depDate, flightnum2 = -1, 
 		queryStr = queryStr.replace("pname", passengerName)
 		queryStr = queryStr.replace("pemail", passengerEmail)
 		queryStr = queryStr.replace("paid", str(price))
+		queryStr = queryStr.replace("''", "'") #not sure why this is happening but it is
 		
 		#print(queryStr)
 		curs.execute(queryStr)
@@ -78,7 +82,7 @@ def createBooking( curs, thisUser, flightnum1, fare1, depDate, flightnum2 = -1, 
 			fetcher = curs.fetchall()
 			price2 = fetcher[0][0]
 
-			print (str(price2))
+			#print (str(price2))
 
 			queryStr = "INSERT INTO bookings VALUES(ticketNum, 'flightnum2', 'fare2', to_date('depDate', 'dd/mm/yy'), NULL)"
 			queryStr = queryStr.replace("ticketNum", str(ticketNum))
@@ -86,29 +90,25 @@ def createBooking( curs, thisUser, flightnum1, fare1, depDate, flightnum2 = -1, 
 			queryStr = queryStr.replace("fare2", fare2)
 			queryStr = queryStr.replace("depDate", depDate)
 			curs.execute(queryStr)	
-		
-		'''queryStr = "INSERT INTO tickets VALUES(ticketNum, 'passengerName', 'passengerEmail', 'price')"
-		queryStr = queryStr.replace("ticketNum", str(ticketNum))
-		queryStr = queryStr.replace("pasengerName", passengerName)
-		queryStr = queryStr.replace("passengerEmail", passengerEmail)
-		queryStr = queryStr.replace("price", str(price))
-		curs.execute(queryStr)'''
 
-		queryStr = "UPDATE tickets set paid_price = totPrice where tno = ticketNum"
-		queryStr = queryStr.replace("totPrice", str(price+price2))
-		queryStr = queryStr.replace("ticketNum", str(ticketNum))
-		curs.execute(queryStr)
+			queryStr = "UPDATE tickets set paid_price = totPrice where tno = ticketNum"
+			queryStr = queryStr.replace("totPrice", str(price+price2))
+			queryStr = queryStr.replace("ticketNum", str(ticketNum))
+			curs.execute(queryStr)
 		
 		curs.connection.commit()
 		#assuming SQL exception if above failed
 		print("Your booking was successful!\nHere is your ticket number: " + str(ticketNum))
+		input("Press 'Enter' to return to main menu.")
 
 	except cx_Oracle.DatabaseError as exc:
+		print(queryStr)		
 		error, = exc.args
 		curs.connection.rollback() #rolls back transaction if fails
 		print( "Something went wrong ")
 		print( sys.stderr, "Oracle code:", error.code)
 		print( sys.stderr, "Oracle message:", error.message)
+		input()
 
 
 
