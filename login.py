@@ -5,6 +5,7 @@ import os
 import clearScreen
 import user
 import menu
+import createViews
 
 def userLogin(curs):
 	"Attempts to log user into system"
@@ -92,6 +93,12 @@ def connect():
 		print( sys.stderr, "Oracle message:", error.message)
 		print("Connection Failed. Exiting Program")
 		sys.exit()
+		
+		
+	createViews.createView(curs, "availableFlights.sql", "available_flights")
+	createViews.createView(curs, "goodConnections.sql", "good_connections")
+	createViews.createView(curs, "allFlights.sql", "allFlights")
+	
 	return(curs)
 
 def displayLoginScreen(curs):	
