@@ -1,34 +1,10 @@
-# INCOMPLETE
-
 import sys
 import cx_Oracle # the package used for accessing Oracle in Python
 import getpass # the package for getting password from user without displaying it
 
-
-
-#connect to database
-# get username
-user = input("Username [%s]: " % getpass.getuser())
-if not user:
-	user=getpass.getuser()
-
-# get password
-pw = getpass.getpass()
-
-# The URL we are connnecting to
-conString=''+user+'/' + pw +'@gwynne.cs.ualberta.ca:1521/CRS'
-
-
-
-def createBooking( thisUser, flightnum1, fare1, flightnum2 = -1, fare2 = -1):
+def createBooking( curs, thisUser, flightnum1, fare1, flightnum2 = -1, fare2 = -1):
 	
 	try:
-		# Establish a connection in Python
-		connection = cx_Oracle.connect(conString)
-		
-		# create a cursor 
-		curs = connection.cursor()
-		
 		#get name
 		passengerName = input("Your name [%s]: " % getpass.getuser())
 		if not passengerName:
@@ -93,10 +69,6 @@ def createBooking( thisUser, flightnum1, fare1, flightnum2 = -1, fare2 = -1):
 		
 		#assuming SQL exception if above failed
 		print("Your booking was successful!\nHere is your ticket number: " + ticketNum)
-		
-		# close the connection
-		curs.close()
-		connection.close()
 
 	except cx_Oracle.DatabaseError as exc:
 		error, = exc.args
