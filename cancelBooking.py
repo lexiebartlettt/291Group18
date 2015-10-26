@@ -10,17 +10,17 @@ def cancelBooking(ticktNum, flightNum, depDate, curs):
     curs.execute(queryStr)
     refund = curs.fetch()
     
-    queryStr = "SELECT paid_price FROM tickets WHERE tno = 'ticketNum'"
+    queryStr = "SELECT paid_price FROM tickets WHERE tno = ticketNum"
     queryStr = queryStr.replace("ticketNum", ticketNum)
     curs.execute(queryStr)
     newPrice = curs.fetch() - refund
     
-    queryStr = "UPDATE tickets SET price_paid = 'newPrice' WHERE tno = 'ticketNum'"
+    queryStr = "UPDATE tickets SET price_paid = 'newPrice' WHERE tno = ticketNum"
     queryStr = queryStr.replace("ticketNum", ticketNum)
     queryStr = queryStr.replace("newPrice", newPrice)
     curs.execute(queryStr)
     
-    queryStr = "DELETE FROM bookings WHERE(tno = 'ticketNum' and flightno = 'flightNum')
+    queryStr = "DELETE FROM bookings WHERE(tno = ticketNum and flightno = 'flightNum')
     queryStr = queryStr.replace("ticketNum", ticketNum)
     queryStr = queryStr.replace("flightNum", flightNum)
     curs.execute(queryStr)
