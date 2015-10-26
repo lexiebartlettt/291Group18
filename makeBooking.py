@@ -3,7 +3,7 @@ import cx_Oracle # the package used for accessing Oracle in Python
 import getpass # the package for getting password from user without displaying it
 import user
 
-def createBooking( curs, thisUser, flightnum1, fare1, depDate1, flightnum2 = -1, fare2 = -1, depDate2 = -1):
+def createBooking( curs, thisUser, flightnum1, fare1, depDate, flightnum2 = -1, fare2 = -1):
 	
 	try:
 		#begins new transaction
@@ -61,26 +61,28 @@ def createBooking( curs, thisUser, flightnum1, fare1, depDate1, flightnum2 = -1,
 		#double check seats are still free!~~!!~!~~!!~!~~!!~~!~!~!~!~!~!~!~!~!~!~!
 		#might want a try catch here(for detailed message) incase booking fails !~!~!~~!~!~!~!~!~!~!~!~!!
 		#seat # is none, will be assigned when passengers check in at airport
-		queryStr = "INSERT INTO bookings VALUES(ticketNum, 'flightnum1', 'fare1', to_date('depDate1', 'dd/mm/yy'), NULL)"
+		queryStr = "INSERT INTO bookings VALUES(ticketNum, 'flightnum1', 'fare1', to_date('depDate', 'dd/mm/yy'), NULL)"
 		queryStr = queryStr.replace("ticketNum", str(ticketNum))
 		queryStr = queryStr.replace("flightnum1", flightnum1)
 		queryStr = queryStr.replace("fare1", fare1)
-		queryStr = queryStr.replace("depDate1", depDate1)
+		queryStr = queryStr.replace("depDate", depDate)
 		#queryStr = queryStr.replace("None", None)
 		curs.execute(queryStr)
 		
 		
 		if flightnum2 != -1 and fare2 != -1:
-			queryStr = "SELECT price FROM flight_fares WHERE fare='fare2'"
+			queryStr = "SELECT price FROM flight_fares WHERE fare='fare2' and flightno='flightnum2'"
 			queryStr = queryStr.replace("fare2", fare2)
+			queryStr = queryStr.replace("flightnum2", flightnum2)
 			curs.execute(queryStr)
-			price += curs.fetch()
-			queryStr = "INSERT INTO bookings VALUES(ticketNum, 'flightnum2', 'fare2', 'depDate2', 'None')"
+			fetcher = curs.fetchall()
+			price = fetcher[0][0]
+
+			queryStr = "INSERT INTO bookings VALUES(ticketNum, 'flightnum2', 'fare2', to_date('depDate', 'dd/mm/yy'), NULL)"
 			queryStr = queryStr.replace("ticketNum", str(ticketNum))
-			queryStr = queryStr.replace("flightNum2", flightNum2)
+			queryStr = queryStr.replace("flightnum2", flightnum2)
 			queryStr = queryStr.replace("fare2", fare2)
-			queryStr = queryStr.replace("depDate2", depDate2)
-			queryStr = queryStr.replace("None", None)
+			queryStr = queryStr.replace("depDate", depDate)
 			curs.execute(queryStr)	
 		
 		'''queryStr = "INSERT INTO tickets VALUES(ticketNum, 'passengerName', 'passengerEmail', 'price')"
@@ -123,17 +125,18 @@ if __name__ == '__main__':
 	flightno = input("Please enter flight number.")
 	fareType = input("Please enter fare type.")
 	dep_date = input("Please enter departure date in the following format: 'dd/mm/yy' \n")
+	'''
 	print("Would you like to book a connection?")
 	connect = input()
-	'''
+	
 	
 	flight2 = -1
 	fare2 = -1
 	
-	'''		
+			
 	if connect.strip().lower() in ('y', 'yes'):
 		flight2 = input("Please enter second flight number. \n")
-		fare2 = input("Please enter second flight fare type. \n")'''
+		fare2 = input("Please enter second flight fare type. \n")
 
 	uname = "brad@mail.com"	
 	user1 = user.User(uname, False)					
