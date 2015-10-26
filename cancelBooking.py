@@ -1,10 +1,10 @@
 import cx_Oracle # the package used for accessing Oracle in Python
 
-def cancelBooking(ticktNum, flightNum, fareType, curs):
+def cancelBooking(ticktNum, flightNum, depDate, curs):
   try:
-    queryStr = "SELECT price FROM flight_fares WHERE(flightno = 'flightNum' and fare = 'fareType')"
+    queryStr = "SELECT price FROM flight_fares WHERE(flightno = 'flightNum' and fare = 'depDate')"
     queryStr = queryStr.replace("flightNum", flightNum)
-    queryStr = queryStr.replace("fareType", fareType)
+    queryStr = queryStr.replace("depDate", depDate)
     curs.execute(queryStr)
     refund = curs.fetch()
     
