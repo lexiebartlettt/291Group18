@@ -73,7 +73,11 @@ def userLogin(curs):
 
 
 def connect():
-	user=getpass.getuser()
+
+	user = input("Username [%s]: " % getpass.getuser())
+	if not user:
+    		user=getpass.getuser()
+
 	pw = getpass.getpass()
 
 	connStr = ''+user+'/' + pw + '@gwynne.cs.ualberta.ca:1521/CRS'
@@ -142,15 +146,17 @@ def registerUser(curs):
 		queryStr = queryStr.replace(":username", uname)
 		queryStr = queryStr.replace(":pwd", pwd)
 
+		curs.connection.begin()		
 		curs.execute(queryStr)
 		curs.connection.commit()
 		
-		isAgent = false
+		isAgent = False
 		user1 = user.User(uname, isAgent)
 		menu.displayMenu(curs, user1)
 		sys.exit()
 
 	except cx_Oracle.DatabaseError as exc:
+		curs.connection.rollback()		
 		error, = exc.args
 		if error.code == 1:
 			print("Username already taken. Please try again")

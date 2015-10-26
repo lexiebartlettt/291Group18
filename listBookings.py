@@ -2,6 +2,7 @@ import sys
 import cx_Oracle
 import user
 import clearScreen
+import cancelBooking
 
 def isInt(num):
 	try:
@@ -96,7 +97,16 @@ def listDetailBooking(curs, ticket, flightno, dep_date):
 			item = str(columns[i][0]) + " : " + str(bookings[0][i])
 			print(item)
 
-		input("Press 'Enter' to return.")
+		cancel = input("Type 'Cancel' to cancel this booking. Press 'Enter' to return to main menu.\n")
+
+		if cancel.strip().lower() == 'cancel':
+			ticketno = bookings[0][0]
+			flightno = bookings[0][2]
+			dep_date = bookings[0][7]
+			fare = bookings[0][6]	
+			cancelBooking.cancelBooking(ticketno, flightno, dep_date, fare,  curs)
+
+
 	except cx_Oracle.DatabaseError as exc:
 		error, = exc.args
 		print (sys.stderr, "Oracle code:", error.code)
