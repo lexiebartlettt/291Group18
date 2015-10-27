@@ -77,15 +77,15 @@ def start_search(curs,user1):
 			coming_option = int(coming_option)
 
 			if (going[going_option][7] == ""):
-				makeBooking.createBooking(curs, user1,going[going_option][0], going[going_option][12], str(going[going_option][3]),-1, -1)
+				makeBooking.createBooking(curs, user1,going[going_option][0], going[going_option][12], dep_date,-1, -1)
 			else:
-				makeBooking.createBooking(curs,user1,going[going_option][0], going[going_option][12], str(going[going_option][3]), going[going_option][10],going[going_option][11])
+				makeBooking.createBooking(curs,user1,going[going_option][0], going[going_option][12], dep_date, going[going_option][10],going[going_option][11])
 			
 
 			if (coming[coming_option][7] == ""):
-				makeBooking.createBooking(curs, user1,coming[coming_option][0], coming[coming_option][12], str(coming[coming_option][3]),-1, -1)
+				makeBooking.createBooking(curs, user1,coming[coming_option][0], coming[coming_option][12], dep_date,-1, -1)
 			else:
-				makeBooking.createBooking(curs,user1,coming[coming_option][0], coming[coming_option][12], str(coming[coming_option][3]), coming[coming_option][10],coming[coming_option][11])
+				makeBooking.createBooking(curs,user1,coming[coming_option][0], coming[coming_option][12], dep_date, coming[coming_option][10],coming[coming_option][11])
 			
 		else: 
 			return
