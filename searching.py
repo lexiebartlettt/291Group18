@@ -48,12 +48,14 @@ def start_search(curs,user1):
 		src = getAcode(src,curs)
 		if (src == False):
 			print("No Airport Matches")
+			input("press enter to return to main menu")
 			return
 
 	if(destCheck == False): 
 		dest = getAcode(dest,curs)
 		if (dest == False):
 			print("No Airport Matches")
+			input("press enter to return to main menu")
 			return
 
 	#They want a round trip
@@ -77,10 +79,12 @@ def start_search(curs,user1):
 
 			if going_option > len(going)-1: 
 				print("Invalid Option")
+				input("press enter to return to main menu")
 				return		
 
 			if coming_option > len(coming)-1: 
 				print("Invalid Option")
+				input("press enter to return to main menu")
 				return	
 
 			if (going[going_option][7] == ""):
@@ -107,12 +111,14 @@ def start_search(curs,user1):
 			option = int(option)
 			if option > len(all_flights)-1: 
 				print("Invalid Option")
+				input("press enter to return to main menu")
 				return		
 			if (all_flights[option][7] == ""):
 				makeBooking.createBooking(curs, user1,all_flights[option][0], all_flights[option][12], dep_date,-1, -1)
 			else:
 				makeBooking.createBooking(curs,user1,all_flights[option][0], all_flights[option][12], dep_date, all_flights[option][10],all_flights[option][11])
 		else: 
+			input("press enter to return to main menu")
 			return
 
 	#They suck at entering letters
