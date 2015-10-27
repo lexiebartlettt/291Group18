@@ -65,7 +65,6 @@ def start_search(curs,user1):
 		print("")
 		print("Return Trips: ")
 		coming = check_airport(dest, src, return_date,curs)
-		chooseSort(coming,party_size)
 
 		book = input("Would you like to book a flight? (y/n)")
 
@@ -75,6 +74,14 @@ def start_search(curs,user1):
 			
 			going_option = int(going_option)
 			coming_option = int(coming_option)
+
+			if going_option > len(going)-1: 
+				print("Invalid Option")
+				return		
+
+			if coming_option > len(coming)-1: 
+				print("Invalid Option")
+				return	
 
 			if (going[going_option][7] == ""):
 				makeBooking.createBooking(curs, user1,going[going_option][0], going[going_option][12], dep_date,-1, -1)
@@ -94,17 +101,19 @@ def start_search(curs,user1):
 	elif (round_trip.upper() == 'N'):
 		all_flights = check_airport(src,dest,dep_date,curs)
 		chooseSort(all_flights, party_size)
-		book = input("Would you like to book a flight? (y/n)")
-		option = input("Please enter option number for Flight\n")
-		option = int(option)
+		book = input("Would you like to book a flight? (y/n)")	
 		if (book.upper() == 'Y'): 
-			
+			option = input("Please enter option number for Flight\n")
+			option = int(option)
+			if option > len(all_flights)-1: 
+				print("Invalid Option")
+				return		
 			if (all_flights[option][7] == ""):
-				makeBooking.createBooking(curs, user1,all_flights[option][0], all_flights[option][12], str(all_flights[option][3]),-1, -1)
+				makeBooking.createBooking(curs, user1,all_flights[option][0], all_flights[option][12], dep_date,-1, -1)
 			else:
-				makeBooking.createBooking(curs,user1,all_flights[option][0], all_flights[option][12], str(all_flights[option][3]), all_flights[option][10],all_flights[option][11])
+				makeBooking.createBooking(curs,user1,all_flights[option][0], all_flights[option][12], dep_date, all_flights[option][10],all_flights[option][11])
 		else: 
-			print("Go to menu here")
+			return
 
 	#They suck at entering letters
 	else: 
