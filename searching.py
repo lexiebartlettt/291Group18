@@ -75,9 +75,8 @@ def start_search(curs,user1):
 			
 			going_option = int(going_option)
 			coming_option = int(coming_option)
-
-			makeBooking.createBooking(curs, user1,going[going_option][0], going[going_option][12], going[going_option][3],-1, -1)
-			makeBooking.createBooking(curs, user1,coming[coming_option][0], coming[coming_option][12], coming[coming_option][3],-1, -1)
+			makeBooking.createBooking(curs, user1,going[going_option][0], going[going_option][12], str(going[going_option][3]),-1, -1)
+			makeBooking.createBooking(curs, user1,coming[coming_option][0], coming[coming_option][12], str(coming[coming_option][3]),-1, -1)
 			
 		else: 
 			return
@@ -90,7 +89,7 @@ def start_search(curs,user1):
 		option = input("Please enter option number for Flight\n")
 		option = int(option)
 		if (book.upper() == 'Y'): 
-			makeBooking.createBooking(curs, user1,all_flights[option][0], all_flights[option][12], all_flights[option][3],-1, -1)
+			makeBooking.createBooking(curs, user1,all_flights[option][0], all_flights[option][12], str(all_flights[option][3]),-1, -1)
 		else: 
 			print("Go to menu here")
 
