@@ -75,8 +75,17 @@ def start_search(curs,user1):
 			
 			going_option = int(going_option)
 			coming_option = int(coming_option)
-			makeBooking.createBooking(curs, user1,going[going_option][0], going[going_option][12], str(going[going_option][3]),-1, -1)
-			makeBooking.createBooking(curs, user1,coming[coming_option][0], coming[coming_option][12], str(coming[coming_option][3]),-1, -1)
+
+			if (going[going_option][7] == ""):
+				makeBooking.createBooking(curs, user1,going[going_option][0], going[going_option][12], str(going[going_option][3]),-1, -1)
+			else:
+				makeBooking.createBooking(curs,user1,going[going_option][0], going[going_option][12], str(going[going_option][3]), going[going_option][10],going[going_option][11])
+			
+
+			if (coming[coming_option][7] == ""):
+				makeBooking.createBooking(curs, user1,coming[coming_option][0], coming[coming_option][12], str(coming[coming_option][3]),-1, -1)
+			else:
+				makeBooking.createBooking(curs,user1,coming[coming_option][0], coming[coming_option][12], str(coming[coming_option][3]), coming[coming_option][10],coming[coming_option][11])
 			
 		else: 
 			return
@@ -89,7 +98,11 @@ def start_search(curs,user1):
 		option = input("Please enter option number for Flight\n")
 		option = int(option)
 		if (book.upper() == 'Y'): 
-			makeBooking.createBooking(curs, user1,all_flights[option][0], all_flights[option][12], str(all_flights[option][3]),-1, -1)
+			
+			if (all_flights[option][7] == ""):
+				makeBooking.createBooking(curs, user1,all_flights[option][0], all_flights[option][12], str(all_flights[option][3]),-1, -1)
+			else:
+				makeBooking.createBooking(curs,user1,all_flights[option][0], all_flights[option][12], str(all_flights[option][3]), all_flights[option][10],all_flights[option][11])
 		else: 
 			print("Go to menu here")
 
@@ -192,7 +205,7 @@ def check_airport(src,dst,dep_date, curs):
 			#fare type #2 
 			current[11] = row[13]
 
-			#fare type #3 
+			#fare type #1 
 			current[12] = row[14]
 
 			all_flights.append(current)
